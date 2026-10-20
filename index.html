@@ -235,6 +235,7 @@
         padding: 9px 18px; border-radius: 999px; box-shadow: var(--shadow);
       }
       .ks-terisi { font-size: 13.5px; font-weight: 700; color: var(--ink-soft); margin-top: 12px; }
+      .ks-catatan-rata { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin-top: 8px; line-height: 1.55; }
 
       /* Kartu per bab */
       .bab-card { margin-top: 18px; border-radius: 20px; border: 2px solid; padding: 16px 16px 6px; }
@@ -421,6 +422,7 @@
           <div class="ks-ket" id="ks-ket"></div>
           <div><span class="ks-badge" id="badge-motivasi"></span></div>
           <div class="ks-terisi" id="jumlah-terisi">–</div>
+          <div class="ks-catatan-rata">Rata-rata dihitung dengan tugas yang belum dikumpulkan dihitung 0 — kecuali Remidial dan penilaian yang belum dicatat Bu guru.</div>
         </div>
 
         <div class="banner-tagihan hidden" id="banner-tagihan">
@@ -662,14 +664,21 @@ var DATA = {"sekolah":"SMP Negeri 22 Mesuji","mapel":"Matematika","guru":"Windar
           peta[k.bab].items.push(k);
         });
 
-        var totalSkor = 0, totalN = 0;
+        var totalSkor = 0, totalN = 0, totalDenom = 0;
+        function kolomDikecualikan(k) {
+          if (k.jenis === "Remidial" || k.jenis.indexOf("Remidi") === 0) return true;
+          if (k.adaTagihan === false) return true;
+          if (kelas.nama === "IX-A" && k.jenis === "Tugas 6" && k.keterangan === "Dilatasi") return true;
+          if (kelas.nama === "IX-B" && k.jenis === "Tugas 9" && k.keterangan === "Rotasi") return true;
+          return false;
+        }
         var daftarTagihan = [];
         var wadah = document.getElementById("daftar-bab");
         wadah.innerHTML = "";
         var idxWarna = 0;
 
         grup.forEach(function (g) {
-          var jumlah = 0, n = 0;
+          var jumlah = 0, n = 0, denomBab = 0;
           var isUTS = g.bab === "UTS";
           var meta = isUTS
             ? { ikon: "📚", kelas: "bab-uts" }
@@ -705,7 +714,9 @@ var DATA = {"sekolah":"SMP Negeri 22 Mesuji","mapel":"Matematika","guru":"Windar
             var v = ada ? nilai[k.jenis] : null;
             var teksTagihan = !ada && Object.prototype.hasOwnProperty.call(tagihanMap, k.jenis)
               ? tagihanMap[k.jenis] : null;
-            if (ada) { jumlah += v; n++; totalSkor += v; totalN++; }
+            var dikecualikan = kolomDikecualikan(k);
+            if (ada) { jumlah += v; n++; denomBab++; totalSkor += v; totalN++; totalDenom++; }
+            else if (!dikecualikan) { denomBab++; totalDenom++; }
             if (teksTagihan) daftarTagihan.push({ kolom: k, teks: teksTagihan });
 
             var row = document.createElement("div");
@@ -776,8 +787,8 @@ var DATA = {"sekolah":"SMP Negeri 22 Mesuji","mapel":"Matematika","guru":"Windar
             seksi.appendChild(row);
           });
 
-          if (n > 0) {
-            var rataBab = jumlah / n;
+          if (denomBab > 0) {
+            var rataBab = jumlah / denomBab;
             avgEl.textContent = (isUTS ? "Rata-rata bagian ini: " : "Rata-rata bab ini: ") + fmtRata(rataBab);
             pfill.style.width = Math.min(100, rataBab) + "%";
             if (rataBab < KKM) pfill.classList.add("kurang");
@@ -788,7 +799,7 @@ var DATA = {"sekolah":"SMP Negeri 22 Mesuji","mapel":"Matematika","guru":"Windar
           wadah.appendChild(seksi);
         });
 
-        var rataTotal = totalN > 0 ? totalSkor / totalN : null;
+        var rataTotal = totalDenom > 0 ? totalSkor / totalDenom : null;
         document.getElementById("rata-total").textContent = rataTotal !== null ? fmtRata(rataTotal) : "–";
         document.getElementById("jumlah-terisi").textContent = totalN + " dari " + kelas.kolom.length + " penilaian sudah ada nilainya";
         var pfillUtama = document.getElementById("pbar-utama-isi");
@@ -841,7 +852,8 @@ var DATA = {"sekolah":"SMP Negeri 22 Mesuji","mapel":"Matematika","guru":"Windar
           "🟢 Lingkaran <strong>hijau</strong> = nilaimu sudah mencapai KKM " + KKM + ". Kerja bagus!<br />" +
           "🔴 Lingkaran <strong>merah</strong> = masih di bawah KKM " + KKM + ". Tidak apa-apa — masih bisa diperbaiki di penilaian berikutnya, semangat!<br />" +
           "👆 Kotak bergaris putus-putus = <strong>belum ada nilai</strong>. Ketuk barisnya untuk melihat tugas yang perlu kamu kerjakan.<br />" +
-          "➖ Tanda <strong>–</strong> abu-abu = belum ada nilai, dan bukan tagihan tugas.";
+          "➖ Tanda <strong>–</strong> abu-abu = belum ada nilai, dan bukan tagihan tugas.<br />" +
+          "🧮 <strong>Rata-rata</strong> dihitung dengan tugas yang belum dikumpulkan dihitung <strong>0</strong> — kecuali Remidial dan penilaian yang belum dicatat Bu guru.";
 
         viewLogin.classList.add("hidden");
         viewHasil.style.display = "block";
