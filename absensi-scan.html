@@ -187,14 +187,19 @@ function updateCamLabel(){
 }
 async function switchCamera(){
   const next = currentFacing==='environment' ? 'user' : 'environment';
-  let ns = null;
-  try{ ns = await navigator.mediaDevices.getUserMedia({video:{facingMode:next}, audio:false}); }
-  catch(e){ alert('Kamera satunya tidak tersedia di perangkat ini.'); return; }
-  if(stream){ stream.getTracks().forEach(t=>t.stop()); }
-  stream = ns; currentFacing = next;
   const video = document.getElementById('video');
-  video.srcObject = stream;
-  try{ await video.play(); }catch(e){}
+  function attach(s){ stream=s; video.srcObject=s; return video.play().catch(function(){}); }
+  if(stream){ stream.getTracks().forEach(function(t){ t.stop(); }); stream=null; }
+  let ns = null;
+  try{ ns = await navigator.mediaDevices.getUserMedia({video:{facingMode:next}, audio:false}); }catch(e){ ns=null; }
+  if(!ns){
+    try{ ns = await navigator.mediaDevices.getUserMedia({video:{facingMode:currentFacing}, audio:false}); }catch(e){ ns=null; }
+    if(ns){ await attach(ns); alert('Kamera '+(next==='user'?'depan':'belakang')+' tidak tersedia di perangkat ini.'); }
+    else { alert('Kamera tidak bisa dibuka.'); }
+    return;
+  }
+  currentFacing = next;
+  await attach(ns);
   updateCamLabel();
 }
 document.getElementById('startBtn').addEventListener('click', async function(){
