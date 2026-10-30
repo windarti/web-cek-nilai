@@ -231,9 +231,8 @@ function parseCSV(text){
     if(q){ if(c==='"'){ if(text[i+1]==='"'){val+='"';i++;} else q=false; } else val+=c; }
     else if(c==='"') q=true;
     else if(c===','){row.push(val);val='';}
-    else if(c==='
-'){row.push(val);rows.push(row);row=[];val='';}
-    else if(c!=='') val+=c;
+    else if(c==='\n'){row.push(val);rows.push(row);row=[];val='';}
+    else if(c!=='\r') val+=c;
   }
   if(val!==''||row.length){row.push(val);rows.push(row);}
   return rows.filter(r=>r.some(x=>String(x).trim()!==''));
@@ -309,10 +308,8 @@ function renderRekap(ym, hEff){
 function downloadRekapCSV(){
   if(!rekapRows.length) return;
   const ym=document.getElementById('rkMonth').value;
-  let csv='No,Nama,Kelas,Hadir,Izin,Sakit,Terlambat,Alpa,%Hadir
-';
-  rekapRows.forEach((r,i)=>{ csv+=(i+1)+',"'+r.nama+'","'+r.kelas+'",'+r.H+','+r.I+','+r.S+','+r.T+','+r.A+','+r.pct+'%
-'; });
+  let csv='No,Nama,Kelas,Hadir,Izin,Sakit,Terlambat,Alpa,%Hadir\n';
+  rekapRows.forEach((r,i)=>{ csv+=(i+1)+',"'+r.nama+'","'+r.kelas+'",'+r.H+','+r.I+','+r.S+','+r.T+','+r.A+','+r.pct+'%\n'; });
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   a.download='rekap-absensi-'+ym+'.csv'; a.click();
