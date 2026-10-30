@@ -15,6 +15,7 @@ header p{font-size:13px;opacity:.9;margin-top:2px}
 main{max-width:640px;margin:0 auto;padding:12px}
 #startBtn{display:block;width:100%;padding:18px;font-size:20px;font-weight:700;background:#16a34a;color:#fff;border:none;border-radius:14px;margin:12px 0;cursor:pointer}
 #startBtn:disabled{background:#475569}
+#switchCam{display:none;width:100%;padding:13px;margin-top:10px;font-size:16px;font-weight:700;background:#334155;color:#fff;border:none;border-radius:12px;cursor:pointer}
 #camWrap{position:relative;border-radius:14px;overflow:hidden;background:#000;display:none}
 #video{width:100%;display:block}
 #result{border-radius:14px;padding:26px 18px;text-align:center;margin:12px 0;display:none}
@@ -72,6 +73,7 @@ footer{text-align:center;padding:18px;font-size:12px;color:#64748b}
 <div id="tabScan">
 <button id="startBtn">📷 MULAI SCAN</button>
 <div id="camWrap"><video id="video" playsinline muted></video></div>
+<button id="switchCam" onclick="switchCamera()">🔄 Kamera: Belakang</button>
 <div id="result"><div class="big" id="rBig"></div><div class="sub" id="rSub"></div><div class="time" id="rTime"></div></div>
 <details>
 <summary>✋ Input Manual (Izin / Sakit / Terlambat)</summary>
@@ -167,17 +169,40 @@ function handleScan(txt){
   showResult('ok', '✓ HADIR', s.nama + ' — ' + s.kelas);
 }
 // kamera
-let stream = null, scanning = false;
+let stream = null, scanning = false, currentFacing = 'environment';
+async function startCamera(){
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:currentFacing}, audio:false});
+  }catch(e){ alert('Kamera tidak bisa dibuka. Pastikan izin kamera diberikan dan halaman dibuka via HTTPS.'); return false; }
+  const video = document.getElementById('video');
+  video.srcObject = stream;
+  try{ await video.play(); }catch(e){}
+  document.getElementById('camWrap').style.display = 'block';
+  document.getElementById('switchCam').style.display = 'block';
+  updateCamLabel();
+  return true;
+}
+function updateCamLabel(){
+  document.getElementById('switchCam').textContent = '🔄 Kamera: ' + (currentFacing==='environment' ? 'Belakang' : 'Depan');
+}
+async function switchCamera(){
+  const next = currentFacing==='environment' ? 'user' : 'environment';
+  let ns = null;
+  try{ ns = await navigator.mediaDevices.getUserMedia({video:{facingMode:next}, audio:false}); }
+  catch(e){ alert('Kamera satunya tidak tersedia di perangkat ini.'); return; }
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); }
+  stream = ns; currentFacing = next;
+  const video = document.getElementById('video');
+  video.srcObject = stream;
+  try{ await video.play(); }catch(e){}
+  updateCamLabel();
+}
 document.getElementById('startBtn').addEventListener('click', async function(){
   const btn = this;
-  try{
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
-  }catch(e){ alert('Kamera tidak bisa dibuka. Pastikan izin kamera diberikan dan halaman dibuka via HTTPS.'); return; }
-  const video = document.getElementById('video');
-  video.srcObject = stream; await video.play();
-  document.getElementById('camWrap').style.display = 'block';
+  const ok = await startCamera();
+  if(!ok) return;
   btn.disabled = true; btn.textContent = 'KAMERA AKTIF — arahkan ke QR kartu';
-  scanning = true; scanLoop(video);
+  scanning = true; scanLoop(document.getElementById('video'));
 });
 function scanLoop(video){
   if(!scanning) return;
@@ -222,6 +247,7 @@ function stopCamera(){
   if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
   const b=document.getElementById('startBtn'); b.disabled=false; b.textContent='📷 MULAI SCAN';
   document.getElementById('camWrap').style.display='none';
+  document.getElementById('switchCam').style.display='none';
 }
 document.getElementById('rkMonth').value = new Date().toISOString().slice(0,7);
 function parseCSV(text){
