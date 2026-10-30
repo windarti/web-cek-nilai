@@ -64,7 +64,7 @@ footer{text-align:center;padding:18px;font-size:12px;color:#64748b}
 <h1>ABSENSI DIGITAL</h1>
 <p>SMP Negeri 22 Mesuji &middot; <span id="today"></span></p>
 </header>
-<div id="counter">Hadir hari ini: <b id="cnt">0</b> / <span id="total"></span></div>
+<div id="counter">Sudah absen hari ini: <b id="cnt">0</b> / <span id="total"></span></div>
 <div class="tabs">
 <button id="tabBtnScan" class="active" onclick="showTab('Scan')">📷 SCAN</button>
 <button id="tabBtnRekap" onclick="showTab('Rekap')">📊 REKAP</button>
@@ -125,6 +125,12 @@ footer{text-align:center;padding:18px;font-size:12px;color:#64748b}
 const SISWA = [{"nisn": "0116070791", "nama": "Ahmad Wahab Mualif", "kelas": "IX-A"}, {"nisn": "0109090708", "nama": "Alfiyan Ade Maulana", "kelas": "IX-A"}, {"nisn": "0119650670", "nama": "Anggun Marsya Septiani", "kelas": "IX-A"}, {"nisn": "0118184019", "nama": "Asep Juanda", "kelas": "IX-A"}, {"nisn": "0116757193", "nama": "Boby Ade Setiawan", "kelas": "IX-A"}, {"nisn": "0118332490", "nama": "Dea Novalisa", "kelas": "IX-A"}, {"nisn": "0114324248", "nama": "Dewi Maryanti", "kelas": "IX-A"}, {"nisn": "0129065083", "nama": "Inggrid Princes Gunawan", "kelas": "IX-A"}, {"nisn": "0112899087", "nama": "Karin Anggraini", "kelas": "IX-A"}, {"nisn": "0125888593", "nama": "Masriyah", "kelas": "IX-A"}, {"nisn": "0118462868", "nama": "Nova Atalia", "kelas": "IX-A"}, {"nisn": "0102915032", "nama": "Rafki Kurniawan Sahputra", "kelas": "IX-A"}, {"nisn": "0124603662", "nama": "Resta Febriansah", "kelas": "IX-A"}, {"nisn": "0118146935", "nama": "Reyhan Andika Pratama", "kelas": "IX-A"}, {"nisn": "0117375559", "nama": "Salsa Rahma Anjani", "kelas": "IX-A"}, {"nisn": "0127152022", "nama": "Tantowi Arya Gumilar", "kelas": "IX-A"}, {"nisn": "0112208207", "nama": "Abdi Radika Prayoga", "kelas": "IX-B"}, {"nisn": "0113014253", "nama": "Ahmad Sufandi", "kelas": "IX-B"}, {"nisn": "0114554034", "nama": "Anisa Mis Bella", "kelas": "IX-B"}, {"nisn": "0122449220", "nama": "Bagus Dwi Riandoko", "kelas": "IX-B"}, {"nisn": "3121872611", "nama": "Chaca Mei Istanti", "kelas": "IX-B"}, {"nisn": "0126805889", "nama": "Devina Citra Larasati", "kelas": "IX-B"}, {"nisn": "0125711127", "nama": "Joana Salsabilla", "kelas": "IX-B"}, {"nisn": "0119714859", "nama": "Kholifatul Aulia", "kelas": "IX-B"}, {"nisn": "0117243197", "nama": "Meida Safira", "kelas": "IX-B"}, {"nisn": "0111085642", "nama": "Reyhan Dirga Pranata", "kelas": "IX-B"}, {"nisn": "0107346470", "nama": "Riska Saputri", "kelas": "IX-B"}, {"nisn": "0121007885", "nama": "Sapei", "kelas": "IX-B"}, {"nisn": "0113559161", "nama": "Vinsen Rendi Setiawan", "kelas": "IX-B"}, {"nisn": "0115800759", "nama": "Yogi Erik Firmansah", "kelas": "IX-B"}, {"nisn": "0113331117", "nama": "Zahra Amatul Fadila", "kelas": "IX-B"}];
 const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfaf3-1164V50ULeP2QKs8wK5NOp-2uNkR-YCA8U3l4XKGPzg/formResponse';
 const E = {nisn:'entry.2145470972', nama:'entry.1159285456', kelas:'entry.177205957', status:'entry.1097696698'};
+const BATAS_TERLAMBAT = '07:40'; // scan lewat jam ini otomatis = Terlambat
+function statusOtomatis(){
+  const n = new Date();
+  const hm = String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  return hm > BATAS_TERLAMBAT ? 'Terlambat' : 'Hadir';
+}
 const byNisn = {}; SISWA.forEach(s => byNisn[s.nisn] = s);
 document.getElementById('total').textContent = SISWA.length;
 document.getElementById('today').textContent = new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
@@ -180,9 +186,11 @@ function handleScan(txt){
   const s = byNisn[nisn];
   if(!s){ showResult('err', 'TIDAK DIKENAL', 'Kartu tidak terdaftar'); return; }
   if(getScanned().includes(nisn)){ showResult('warn', 'SUDAH ABSEN', s.nama + ' — ' + s.kelas); return; }
-  postAbsen(s, 'Hadir');
+  const st = statusOtomatis();
+  postAbsen(s, st);
   markScanned(nisn);
-  showResult('ok', '✓ HADIR', s.nama + ' — ' + s.kelas);
+  if(st==='Terlambat') showResult('warn', 'TERLAMBAT', s.nama + ' — ' + s.kelas);
+  else showResult('ok', '✓ HADIR', s.nama + ' — ' + s.kelas);
 }
 // kamera
 let stream = null, scanning = false, currentFacing = 'environment';
