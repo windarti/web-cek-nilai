@@ -78,6 +78,10 @@ footer{text-align:center;padding:18px;font-size:12px;color:#64748b}
 <details>
 <summary>✋ Input Manual (Izin / Sakit / Terlambat)</summary>
 <div class="manual-row">
+<label>Kelas:</label>
+<select id="mKelas"><option value="">Semua kelas</option></select>
+</div>
+<div class="manual-row">
 <label>Pilih siswa:</label>
 <select id="mStudent"></select>
 </div>
@@ -93,7 +97,7 @@ footer{text-align:center;padding:18px;font-size:12px;color:#64748b}
 <div id="tabRekap" style="display:none">
 <div class="rekap-ctl">
 <div><label>Bulan:</label><input type="month" id="rkMonth"></div>
-<div><label>Kelas:</label><select id="rkKelas"><option value="">Semua kelas</option><option>IX-A</option><option>IX-B</option></select></div>
+<div><label>Kelas:</label><select id="rkKelas"><option value="">Semua kelas</option></select></div>
 </div>
 <button id="loadRekap" onclick="loadRekap()">TAMPILKAN REKAP</button>
 <div class="rekap-actions" id="rkActions" style="display:none">
@@ -126,7 +130,20 @@ const byNisn = {}; SISWA.forEach(s => byNisn[s.nisn] = s);
 document.getElementById('total').textContent = SISWA.length;
 document.getElementById('today').textContent = new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 const sel = document.getElementById('mStudent');
-SISWA.forEach(s => { const o=document.createElement('option'); o.value=s.nisn; o.textContent=s.nama+' — '+s.kelas; sel.appendChild(o); });
+const kelasList = [...new Set(SISWA.map(s=>s.kelas))].sort();
+['rkKelas','mKelas'].forEach(id=>{
+  const ksel = document.getElementById(id);
+  kelasList.forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=k; ksel.appendChild(o); });
+});
+function fillManualStudents(){
+  const kf = document.getElementById('mKelas').value;
+  sel.innerHTML = '';
+  SISWA.filter(s=>!kf||s.kelas===kf).forEach(s=>{
+    const o=document.createElement('option'); o.value=s.nisn; o.textContent=s.nama+' — '+s.kelas; sel.appendChild(o);
+  });
+}
+document.getElementById('mKelas').addEventListener('change', fillManualStudents);
+fillManualStudents();
 
 function dayKey(){ return 'absensi-'+new Date().toISOString().slice(0,10); }
 function getScanned(){ try{ return JSON.parse(localStorage.getItem(dayKey())||'[]'); }catch(e){ return []; } }
