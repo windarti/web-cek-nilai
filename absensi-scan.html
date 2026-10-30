@@ -209,7 +209,7 @@ document.querySelectorAll('.status-btns button').forEach(b => b.addEventListener
   setTimeout(()=>{ mm.textContent=''; }, 3000);
 }));
 // ===== REKAP BULANAN =====
-const SHEET_CSV_URL = ''; // diisi saat Sheet respons dipublikasikan
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1FsxZs7qxA0mnZaPsia2hFVT3OF6CkntiRReLkTJ_A1Q/gviz/tq?tqx=out:csv&sheet=Form%20Responses%201'; // diisi saat Sheet respons dipublikasikan
 function showTab(name){
   document.getElementById('tabScan').style.display = name==='Scan'?'block':'none';
   document.getElementById('tabRekap').style.display = name==='Rekap'?'block':'none';
