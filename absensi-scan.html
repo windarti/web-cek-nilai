@@ -107,7 +107,7 @@ footer{text-align:center;padding:18px;font-size:12px;color:#64748b}
 </table></div>
 </div><!-- /tabRekap -->
 </main>
-<footer>Tempelkan kartu ke kamera &middot; otomatis tercatat</footer>
+<footer>Tempelkan kartu ke kamera &middot; otomatis tercatat<br><span id="ver" style="opacity:.7"></span></footer>
 <script>
 /**
  * Minified by jsDelivr using Terser v5.39.0.
@@ -250,6 +250,7 @@ function stopCamera(){
   document.getElementById('switchCam').style.display='none';
 }
 document.getElementById('rkMonth').value = new Date().toISOString().slice(0,7);
+document.getElementById('ver').textContent = 'v5 · Rekap ' + (SHEET_CSV_URL ? 'tersambung ✓' : 'belum tersambung');
 function parseCSV(text){
   const rows=[]; let row=[], val='', q=false;
   for(let i=0;i<text.length;i++){
@@ -280,7 +281,13 @@ async function loadRekap(){
   document.getElementById('rkTable').style.display='none';
   document.getElementById('rkActions').style.display='none';
   try{
-    const rows=parseCSV(await (await fetch(SHEET_CSV_URL)).text());
+    const ctl = new AbortController();
+    const to = setTimeout(function(){ ctl.abort(); }, 25000);
+    let rows;
+    try{
+      const res = await fetch(SHEET_CSV_URL, {signal: ctl.signal});
+      rows = parseCSV(await res.text());
+    }finally{ clearTimeout(to); }
     if(rows.length<2){ msg.textContent='Belum ada data absensi.'; return; }
     const head=rows[0].map(h=>String(h).toLowerCase());
     const ci=n=>head.findIndex(h=>h.includes(n));
@@ -314,7 +321,7 @@ async function loadRekap(){
       return {nama:p.nama,kelas:p.kelas,H:c.H,I:c.I,S:c.S,T:c.T,A,pct};
     }).sort((a,b)=>a.kelas.localeCompare(b.kelas)||a.nama.localeCompare(b.nama));
     renderRekap(ym, hEff);
-  }catch(e){ msg.textContent='Gagal memuat data. Periksa koneksi internet.'; }
+  }catch(e){ msg.textContent='Gagal memuat data. Sinyal lemah — coba lagi.'; }
 }
 function renderRekap(ym, hEff){
   const msg=document.getElementById('rekapMsg');
