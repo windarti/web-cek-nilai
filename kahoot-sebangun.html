@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Kuis Sebangun &amp; Kongruen — Mode Guru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --bg2:#f3f6f4; --card:#ffffff; --ink:#14201c; --muted:#5a6b64;
+    --line:#dfe7e2; --teal:#0e7c66; --teal-d:#0a5f4f; --amber:#f2a007; --amber-bg:#fff3d6;
+    --red:#e21b3c; --blue:#1368ce; --yellow:#d89e00; --green:#26890c;
+    --shadow:0 10px 30px rgba(20,32,28,.10);
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#101613; --bg2:#171e1a; --card:#1b2420; --ink:#eef4f1; --muted:#a7b8b0; --line:#2c3a34; --amber-bg:#3a2f10; --shadow:0 10px 30px rgba(0,0,0,.4); color-scheme:dark; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+  h1,h2,h3,.display{font-family:"Baloo 2","Plus Jakarta Sans",sans-serif;line-height:1.1;margin:0}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:1100px;margin:0 auto;padding:18px 16px 48px}
+  .screen{display:none}
+  .screen.active{display:block}
+
+  /* Top status bar */
+  .topbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-weight:800;padding:8px 14px;border-radius:999px;font-size:15px}
+  .badge.amber{background:var(--amber);color:#221a00}
+  .progress{font-weight:800;color:var(--muted);font-size:16px}
+  .pbar{height:12px;background:var(--bg2);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:6px 0 18px}
+  .pbar > div{height:100%;background:var(--teal);width:0%;transition:width .4s ease}
+
+  /* Group chips strip */
+  .chips{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:18px}
+  .chip{border:2px solid var(--line);border-top:6px solid var(--gc,#999);background:var(--card);border-radius:14px;padding:8px 10px;min-width:0}
+  .chip b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip span{display:block;font-size:13px;color:var(--muted);font-weight:700}
+  .chip .pts{font-size:18px;color:var(--ink)}
+
+  /* Cards & buttons */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:26px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:none;border-radius:16px;font-weight:800;font-size:20px;padding:16px 28px;min-height:60px;text-decoration:none;transition:transform .08s ease, filter .15s ease}
+  .btn:active{transform:scale(.98)}
+  .btn-teal{background:var(--teal);color:#fff}
+  .btn-teal:hover{background:var(--teal-d)}
+  .btn-amber{background:var(--amber);color:#221a00}
+  .btn-ghost{background:var(--bg2);color:var(--ink);border:2px solid var(--line)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn-big{font-size:24px;padding:20px 36px;min-height:72px;width:100%}
+  .btn-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+  .btn-row .btn{flex:1 1 220px}
+
+  /* Setup */
+  .hero{text-align:center;padding:28px 10px 6px}
+  .hero h1{font-size:clamp(34px,6vw,58px);font-weight:800}
+  .hero h1 em{font-style:normal;color:var(--teal)}
+  .hero p{font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:680px;margin:14px auto 0}
+  .howto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+  .howto div{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:16px;font-size:16px}
+  .howto b{display:block;font-size:18px;margin-bottom:4px}
+  .names{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  .namefield{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-left:10px solid var(--gc);border-radius:14px;padding:8px 12px;background:var(--card)}
+  .namefield .dot{font-size:22px}
+  .namefield input{flex:1;min-width:0;border:none;background:transparent;color:var(--ink);font:inherit;font-weight:800;font-size:19px;padding:10px 4px;outline:none}
+  .namefield input:focus{border-bottom:3px solid var(--teal)}
+  label.flabel{font-weight:800;font-size:17px;display:block;margin:18px 0 4px}
+
+  /* Teach */
+  .teach-list{list-style:none;margin:18px 0;padding:0;display:grid;gap:12px}
+  .teach-list li{display:flex;gap:14px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:clamp(17px,2.4vw,21px)}
+  .teach-list .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:19px}
+  .teach-list b{color:var(--teal-d)}
+  @media (prefers-color-scheme: dark){ .teach-list b{color:#5fd3b8} }
+  .example{background:var(--amber-bg);border:2px dashed var(--amber);border-radius:16px;padding:16px 18px;font-size:clamp(16px,2.2vw,20px);margin-top:6px}
+  .example b{display:block;margin-bottom:4px}
+
+  /* Question */
+  .qtext{font-size:clamp(26px,4.4vw,42px);font-weight:800;font-family:"Baloo 2",sans-serif;line-height:1.2}
+  .diagram{display:flex;justify-content:center;margin:16px 0 4px}
+  .diagram svg{max-width:100%;height:auto}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  .opt{display:flex;align-items:center;gap:14px;border-radius:18px;padding:18px;color:#fff;font-size:clamp(19px,2.8vw,26px);font-weight:800;min-height:84px;border:4px solid transparent}
+  .opt .shape{flex:0 0 auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,.25);border-radius:10px}
+  .opt .letter{flex:0 0 auto;background:#fff;color:#111;border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:19px}
+  .opt.c0{background:var(--red)} .opt.c1{background:var(--blue)} .opt.c2{background:var(--yellow)} .opt.c3{background:var(--green)}
+  .opts.revealed .opt{opacity:.45}
+  .opts.revealed .opt.correct{opacity:1;border-color:var(--ink);box-shadow:0 0 0 4px var(--amber);transform:scale(1.02)}
+  .opts.revealed .opt.correct .verdict{margin-left:auto;font-size:30px}
+  .explain{display:none;margin-top:18px;background:var(--amber-bg);border:2px solid var(--amber);border-radius:16px;padding:16px 18px;font-size:clamp(16px,2.4vw,20px)}
+  .explain.show{display:block}
+  .explain b{color:#8a5d00}
+  @media (prefers-color-scheme: dark){ .explain b{color:var(--amber)} }
+
+  /* Scoring */
+  .scoring{display:none;margin-top:22px}
+  .scoring.show{display:block}
+  .scoring h3{font-size:clamp(22px,3vw,28px);margin-bottom:6px}
+  .scoring p{color:var(--muted);font-size:17px;margin:0 0 14px}
+  .scoregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .gbtn{border:3px solid var(--line);border-top:8px solid var(--gc);background:var(--card);color:var(--ink);border-radius:16px;padding:16px 12px;text-align:center;min-height:104px}
+  .gbtn b{display:block;font-size:20px}
+  .gbtn span{display:block;font-size:14px;color:var(--muted);font-weight:700;margin-top:2px}
+  .gbtn .tick{display:block;font-size:30px;line-height:1;margin-bottom:4px;filter:grayscale(1);opacity:.35}
+  .gbtn.on{border-color:var(--green);background:#e9f7e2}
+  @media (prefers-color-scheme: dark){ .gbtn.on{background:#1d3016} }
+  .gbtn.on .tick{filter:none;opacity:1}
+
+  /* Leaderboard */
+  .board{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+  .board li{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-left:10px solid var(--gc);border-radius:16px;padding:14px 18px}
+  .board .rank{font-family:"Baloo 2";font-size:28px;font-weight:800;width:44px;text-align:center}
+  .board .who{flex:1;min-width:0}
+  .board .who b{font-size:clamp(18px,2.6vw,23px);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .board .who span{color:var(--muted);font-weight:700;font-size:15px}
+  .board .score{font-family:"Baloo 2";font-size:clamp(24px,3.4vw,34px);font-weight:800}
+  .board li.first{background:var(--amber-bg);border-color:var(--amber)}
+
+  /* Podium */
+  .podium{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:30px 0 8px}
+  .pod{text-align:center;flex:1;max-width:220px}
+  .pod .medal{font-size:52px;line-height:1}
+  .pod .pname{font-weight:800;font-size:clamp(17px,2.6vw,23px);margin:8px 0 2px;word-break:break-word}
+  .pod .pscore{color:var(--muted);font-weight:800;margin-bottom:10px}
+  .pod .block{border-radius:14px 14px 0 0;color:#fff;font-family:"Baloo 2";font-weight:800;display:flex;align-items:flex-start;justify-content:center;padding-top:10px;font-size:34px}
+  .pod.p1 .block{height:150px;background:var(--amber);color:#221a00}
+  .pod.p2 .block{height:105px;background:#8d9a94}
+  .pod.p3 .block{height:78px;background:#b06a2c}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+  .center{text-align:center}
+  .mt{margin-top:20px}
+  footer{margin-top:34px;text-align:center;color:var(--muted);font-size:14px}
+
+  @media (max-width:760px){
+    .chips{grid-template-columns:repeat(3,1fr)}
+    .chip b{font-size:13px}
+    .chip .pts{font-size:16px}
+    .chip span{font-size:12px}
+    .howto{grid-template-columns:1fr}
+    .names{grid-template-columns:1fr}
+    .scoregrid{grid-template-columns:1fr 1fr}
+    .card{padding:18px}
+  }
+  @media (max-width:560px){
+    .opts{grid-template-columns:1fr}
+    .opt{min-height:64px}
+    .scoregrid{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+
+  <!-- ===== SETUP ===== -->
+  <section class="screen active" id="s-setup">
+    <div class="hero">
+      <h1>Kuis <em>Sebangun</em> &amp; <em>Kongruen</em></h1>
+      <p>Game kuis kelas IX ala Kahoot — <b>Mode Guru</b>. Soal tampil besar di layar, kelompok menjawab bersama, guru yang menilai. Siap seru-seruan?</p>
+    </div>
+    <div class="howto">
+      <div><b>1 · Guru memimpin</b>Soal dibaca dari layar proyektor. Belum ada jawaban yang terlihat.</div>
+      <div><b>2 · Kelompok menjawab</b>Tulis jawaban di kertas / papan kecil, atau angkat tangan beramai-ramai.</div>
+      <div><b>3 · Guru menilai</b>Ketuk “Tampilkan Jawaban”, lalu tandai kelompok yang benar. Otomatis +100 poin!</div>
+    </div>
+    <div class="card">
+      <h2 style="font-size:26px">Nama 6 Kelompok</h2>
+      <p style="color:var(--muted);margin:6px 0 0">Boleh diganti sesuai nama kelompok di kelas. Kalau dibiarkan, namanya tetap “Kelompok 1” sampai “Kelompok 6”.</p>
+      <label class="flabel" for="n0">Daftar kelompok</label>
+      <div class="names" id="nameFields"></div>
+      <div class="btn-row">
+        <button class="btn btn-teal btn-big" id="btnStart">▶ &nbsp;Mulai Game</button>
+      </div>
+      <p class="center" style="color:var(--muted);font-weight:700">12 soal · 3 level · tiap jawaban benar = 100 poin</p>
+    </div>
+  </section>
+
+  <!-- ===== TEACH ===== -->
+  <section class="screen" id="s-teach">
+    <div class="topbar">
+      <span class="badge amber" id="teachBadge">LEVEL 1</span>
+      <span class="progress" id="teachProgress"></span>
+    </div>
+    <div class="pbar"><div id="teachBar"></div></div>
+    <div id="chipsTeach" class="chips"></div>
+    <div class="card">
+      <h2 id="teachTitle" style="font-size:clamp(30px,5vw,46px)"></h2>
+      <p style="font-size:clamp(17px,2.4vw,21px);color:var(--muted);margin:8px 0 0" id="teachIntro"></p>
+      <ul class="teach-list" id="teachList"></ul>
+      <div class="example" id="teachExample"></div>
+      <div class="btn-row">
+        <button class="btn btn-teal btn-big" id="btnStartLevel">Mulai Soal Level Ini →</button>
+      </div>
+      <p class="center" style="color:var(--muted);font-weight:700">Beri waktu pengajar di tiap kelompok menjelaskan dulu — ketuk tombol di atas kalau semua sudah siap.</p>
+    </div>
+  </section>
+
+  <!-- ===== QUESTION ===== -->
+  <section class="screen" id="s-question">
+    <div class="topbar">
+      <span class="badge" id="qBadge">LEVEL 1 · SOAL 1</span>
+      <span class="progress" id="qProgress"></span>
+    </div>
+    <div class="pbar"><div id="qBar"></div></div>
+    <div id="chipsQ" class="chips"></div>
+    <div class="card">
+      <div class="qtext" id="qText"></div>
+      <div class="diagram" id="qDiagram"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explain" id="qExplain"></div>
+      <div id="revealRow" class="btn-row">
+        <button class="btn btn-amber btn-big" id="btnReveal">👀 &nbsp;Tampilkan Jawaban</button>
+      </div>
+      <div class="scoring" id="scoring">
+        <h3>Kelompok mana yang menjawab BENAR?</h3>
+        <p>Ketuk nama kelompok yang benar — warnanya berubah hijau. Yang tidak diketuk dianggap salah. Skor +100 otomatis ditambahkan saat ketuk tombol lanjut.</p>
+        <div class="scoregrid" id="scoreGrid"></div>
+        <div class="btn-row">
+          <button class="btn btn-teal btn-big" id="btnNext">Simpan Skor &amp; Lanjut →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LEADERBOARD ===== -->
+  <section class="screen" id="s-board">
+    <div class="topbar">
+      <span class="badge amber" id="boardBadge">PAPAN PERINGKAT</span>
+      <span class="progress" id="boardProgress"></span>
+    </div>
+    <div class="card">
+      <h2 class="center" style="font-size:clamp(30px,5vw,44px)" id="boardTitle">Peringkat Sementara</h2>
+      <p class="center" style="color:var(--muted);font-size:18px;margin-top:6px" id="boardSub"></p>
+      <ol class="board" id="boardList"></ol>
+      <div class="btn-row">
+        <button class="btn btn-teal btn-big" id="btnBoardNext">Lanjut →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PODIUM ===== -->
+  <section class="screen" id="s-podium">
+    <div class="card">
+      <h2 class="center" style="font-size:clamp(32px,5.5vw,50px)">🏆 Podium Pemenang 🏆</h2>
+      <p class="center" style="color:var(--muted);font-size:19px;margin-top:6px">Selamat untuk semua kelompok — yang penting sudah paham sebangun &amp; kongruen!</p>
+      <div class="podium" id="podiumRow"></div>
+      <ol class="board" id="finalList"></ol>
+      <div class="btn-row">
+        <button class="btn btn-teal" id="btnAgain">🔁 Main Lagi (Skor dari Nol)</button>
+        <button class="btn btn-ghost" id="btnEditNames">✏️ Ganti Nama Kelompok</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>Kuis Kesebangunan &amp; Kekongruenan · Kelas IX · Mode Guru — cukup satu layar untuk sekelas.</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var COLORS = ["#e21b3c","#1368ce","#d89e00","#26890c","#7b2d8b","#e05d10"];
+var EMOJI  = ["🔴","🔵","🟡","🟢","🟣","🟠"];
+var SHAPES = ["▲","◆","●","■"];
+
+/* ---------- DIAGRAMS (inline SVG) ---------- */
+function svgWrap(inner){ return '<svg viewBox="0 0 340 170" width="340" role="img" aria-hidden="true">'+inner+'</svg>'; }
+var DIAGRAMS = {
+  triSimilar: svgWrap(
+    '<polygon points="60,140 140,140 100,50" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="200,140 310,140 255,25" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<text x="88" y="162" font-size="17" font-weight="700" fill="currentColor">Kecil</text>'+
+    '<text x="238" y="162" font-size="17" font-weight="700" fill="currentColor">Besar</text>'),
+  triCongruent: svgWrap(
+    '<polygon points="40,140 140,140 90,45" fill="rgba(38,137,12,.18)" stroke="#26890c" stroke-width="4"/>'+
+    '<polygon points="200,140 300,140 250,45" fill="rgba(38,137,12,.18)" stroke="#26890c" stroke-width="4"/>'+
+    '<text x="52" y="162" font-size="17" font-weight="700" fill="currentColor">Segitiga A</text>'+
+    '<text x="212" y="162" font-size="17" font-weight="700" fill="currentColor">Segitiga B</text>'),
+  circles: svgWrap(
+    '<circle cx="95" cy="85" r="42" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<circle cx="245" cy="85" r="68" fill="none" stroke="#e21b3c" stroke-width="4"/>'),
+  squares: svgWrap(
+    '<rect x="55" y="50" width="70" height="70" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<rect x="185" y="25" width="120" height="120" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<text x="72" y="95" font-size="16" font-weight="700" fill="currentColor">5 cm</text>'+
+    '<text x="222" y="92" font-size="16" font-weight="700" fill="currentColor">10 cm</text>'),
+  rectPhoto: svgWrap(
+    '<rect x="35" y="45" width="110" height="80" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<rect x="185" y="25" width="140" height="102" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<text x="52" y="142" font-size="16" font-weight="700" fill="currentColor">4 cm × 6 cm</text>'+
+    '<text x="205" y="144" font-size="16" font-weight="700" fill="currentColor">lebar 8 cm × ?</text>'),
+  shadow: svgWrap(
+    '<line x1="20" y1="145" x2="320" y2="145" stroke="currentColor" stroke-width="3"/>'+
+    '<line x1="80" y1="145" x2="80" y2="85" stroke="#26890c" stroke-width="7"/>'+
+    '<line x1="80" y1="145" x2="150" y2="145" stroke="#999" stroke-width="7"/>'+
+    '<line x1="230" y1="145" x2="230" y2="35" stroke="#26890c" stroke-width="9"/>'+
+    '<line x1="230" y1="145" x2="320" y2="145" stroke="#999" stroke-width="9"/>'+
+    '<text x="52" y="75" font-size="15" font-weight="700" fill="currentColor">Tongkat 1 m</text>'+
+    '<text x="88" y="163" font-size="14" fill="currentColor">2 m</text>'+
+    '<text x="232" y="25" font-size="15" font-weight="700" fill="currentColor">Pohon ?</text>'+
+    '<text x="262" y="163" font-size="14" fill="currentColor">6 m</text>'),
+  triSides: svgWrap(
+    '<polygon points="50,140 150,140 100,55" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="195,140 315,140 255,35" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<text x="82" y="160" font-size="16" font-weight="700" fill="currentColor">alas 4 cm</text>'+
+    '<text x="228" y="160" font-size="16" font-weight="700" fill="currentColor">alas 8 cm</text>'+
+    '<text x="30" y="100" font-size="16" font-weight="700" fill="currentColor">5 cm</text>'+
+    '<text x="168" y="92" font-size="16" font-weight="700" fill="currentColor">? cm</text>')
+};
+
+/* ---------- CONTENT ---------- */
+var LEVELS = [
+{
+  title:"Konsep Dasar", intro:"Kenali dulu perbedaan SEBANGUN dan KONGRUEN — ini fondasi semua soal berikutnya.",
+  teach:[
+    "<b>Sebangun (~)</b> : bentuknya <b>sama</b>, ukurannya <b>boleh berbeda</b> (lebih besar atau lebih kecil).",
+    "<b>Kongruen (≅)</b> : bentuk <b>dan</b> ukurannya <b>persis sama</b> — seperti hasil fotokopi.",
+    "Bangun sebangun: <b>sudut-sudut yang bersesuaian sama besar</b>, dan <b>sisi-sisinya sebanding</b> (sama-sama dikali angka yang sama).",
+    "Bangun kongruen: sisi yang bersesuaian <b>sama panjang</b> dan sudutnya <b>sama besar</b>. Semua bangun kongruen pasti sebangun, tapi sebangun belum tentu kongruen!"
+  ],
+  example:"<b>Contoh gampang:</b> Foto yang diperbesar tetap sebangun dengan foto aslinya. Dua kue yang dicetak dengan cetakan yang sama adalah kongruen.",
+  questions:[
+    { q:"Dua bangun dikatakan SEBANGUN jika…",
+      opts:["Bentuknya sama, ukurannya boleh berbeda","Bentuk dan ukurannya persis sama","Warnanya sama persis","Luasnya harus sama"], a:0,
+      ex:"Sebangun = bentuk sama, ukuran boleh beda. Kalau ukuran juga persis sama, itu namanya kongruen." },
+    { q:"Dua bangun dikatakan KONGRUEN jika…",
+      opts:["Bentuknya sama, ukurannya berbeda","Sudutnya saja yang sama","Bentuk dan ukurannya persis sama","Salah satu sisinya sama panjang"], a:2,
+      ex:"Kongruen artinya persis sama — seperti dua benda hasil cetakan yang sama." },
+    { q:"Pasangan bangun yang PASTI selalu sebangun adalah…", diagram:"circles",
+      opts:["Dua persegi panjang sembarang","Dua lingkaran","Dua segitiga sembarang","Dua jajargenjang sembarang"], a:1,
+      ex:"Semua lingkaran bentuknya sama, hanya ukurannya (jari-jari) yang beda — jadi dua lingkaran selalu sebangun. Persegi panjang sembarang bisa beda perbandingan panjang-lebarnya." },
+    { q:"Perhatikan dua segitiga ini. Jika keduanya KONGRUEN, maka…", diagram:"triCongruent",
+      opts:["Hanya satu sudutnya yang sama","Sisi dan sudut yang bersesuaian sama persis","Segitiga B lebih besar dari A","Hanya alasnya yang sama panjang"], a:1,
+      ex:"Kongruen = semua sisi yang bersesuaian sama panjang dan semua sudut yang bersesuaian sama besar." }
+  ]
+},
+{
+  title:"Menghitung Sisi", intro:"Sekarang berlatih mencari sisi yang belum diketahui dengan perbandingan. Angkanya dibulatkan — pelan-pelan saja!",
+  teach:[
+    "Cari dulu <b>pasangan sisi yang bersesuaian</b>: sisi terpendek dengan sisi terpendek, sisi terpanjang dengan sisi terpanjang.",
+    "Tulis perbandingannya: <b>sisi bangun kecil ÷ sisi bangun besar</b> — hasilnya harus sama untuk semua pasangan sisi.",
+    "Trik cepat: cari tahu bangunnya <b>diperbesar/diperkecil berapa kali</b>. Contoh: 4 cm menjadi 8 cm artinya diperbesar <b>2 kali</b> — semua sisi lain ikut dikali 2.",
+    "Jangan tertukar pasangan! Samakan juga <b>satuan</b>-nya (cm dengan cm, m dengan m)."
+  ],
+  example:"<b>Contoh:</b> Segitiga kecil alasnya 3 cm, segitiga besar alasnya 6 cm (2 kali lipat). Sisi miring kecil 5 cm → sisi miring besar = 5 × 2 = <b>10 cm</b>.",
+  questions:[
+    { q:"Dua segitiga sebangun. Sisi segitiga kecil 4 cm bersesuaian dengan 8 cm pada segitiga besar. Sisi lain yang 5 cm menjadi…", diagram:"triSides",
+      opts:["7 cm","9 cm","10 cm","20 cm"], a:2,
+      ex:"4 → 8 artinya diperbesar 2 kali. Jadi 5 × 2 = 10 cm." },
+    { q:"Persegi kecil sisinya 5 cm. Persegi besar sisinya 10 cm. Persegi besar adalah hasil perbesaran berapa kali?", diagram:"squares",
+      opts:["2 kali","3 kali","5 kali","10 kali"], a:0,
+      ex:"10 ÷ 5 = 2. Jadi persegi besar diperbesar 2 kali dari persegi kecil." },
+    { q:"Persegi panjang berukuran 3 cm × 6 cm sebangun dengan persegi panjang berlebar 6 cm. Berapa panjang persegi panjang kedua?",
+      opts:["9 cm","12 cm","15 cm","18 cm"], a:1,
+      ex:"Lebar 3 → 6 artinya dikali 2. Panjangnya ikut dikali 2: 6 × 2 = 12 cm." },
+    { q:"Segitiga ABC sebangun dengan segitiga PQR. AB = 6 cm, PQ = 12 cm, dan BC = 7 cm. Berapa panjang QR?",
+      opts:["9 cm","12 cm","14 cm","21 cm"], a:2,
+      ex:"AB → PQ: 6 → 12, diperbesar 2 kali. Maka QR = 7 × 2 = 14 cm." }
+  ]
+},
+{
+  title:"Soal Cerita", intro:"Terakhir: sebangun dipakai di kehidupan nyata — foto, bayangan, peta, dan miniatur. Baca soalnya pelan-pelan ya!",
+  teach:[
+    "<b>Foto & gambar</b> yang diperbesar/diperkecil selalu sebangun: panjang dan lebar dikali angka yang sama.",
+    "<b>Bayangan:</b> tinggi benda ÷ bayangannya selalu sama pada waktu yang sama. Tinggi benda ÷ bayangan benda = tinggi pohon ÷ bayangan pohon.",
+    "<b>Peta & miniatur</b> memakai skala: jarak di peta × skala = jarak sebenarnya.",
+    "Langkah aman: tulis yang diketahui, tulis yang ditanya, lalu cari <b>“dikali berapa”</b>-nya."
+  ],
+  example:"<b>Contoh:</b> Foto lebar 5 cm diperbesar jadi 15 cm (3 kali). Tinggi foto 10 cm → menjadi 10 × 3 = <b>30 cm</b>.",
+  questions:[
+    { q:"Sebuah foto berukuran 4 cm × 6 cm diperbesar sehingga lebarnya menjadi 8 cm. Berapa panjang foto setelah diperbesar?", diagram:"rectPhoto",
+      opts:["10 cm","12 cm","14 cm","16 cm"], a:1,
+      ex:"Lebar 4 → 8 artinya dikali 2. Panjang ikut dikali 2: 6 × 2 = 12 cm." },
+    { q:"Tongkat setinggi 1 m mempunyai bayangan 2 m. Pada saat yang sama, bayangan sebuah pohon 6 m. Berapa tinggi pohon itu?", diagram:"shadow",
+      opts:["2 m","3 m","4 m","12 m"], a:1,
+      ex:"Bayangan selalu 2 kali tinggi benda (1 m → 2 m). Bayangan pohon 6 m, jadi tingginya 6 ÷ 2 = 3 m." },
+    { q:"Jarak dua kota pada peta adalah 5 cm. Skala peta 1 : 1.000.000. Berapa jarak sebenarnya kedua kota itu?",
+      opts:["5 km","25 km","50 km","500 km"], a:2,
+      ex:"5 cm × 1.000.000 = 5.000.000 cm = 50 km." },
+    { q:"Miniatur sebuah gedung dibuat sebangun dengan gedung aslinya. Tinggi miniatur 20 cm dan tinggi gedung asli 20 m. Miniatur itu diperkecil berapa kali dari aslinya?",
+      opts:["10 kali","50 kali","100 kali","1.000 kali"], a:2,
+      ex:"Samakan satuan: 20 m = 2.000 cm. 2.000 ÷ 20 = 100. Jadi miniatur diperkecil 100 kali (skala 1 : 100)." }
+  ]
+}];
+
+/* ---------- STATE ---------- */
+var groups = [];
+var levelIdx = 0, qIdx = 0, answered = 0, revealed = false, selected = {};
+var totalQ = LEVELS.reduce(function(s,l){return s+l.questions.length;},0);
+
+function el(id){ return document.getElementById(id); }
+function show(id){
+  var screens = document.querySelectorAll(".screen");
+  for(var i=0;i<screens.length;i++) screens[i].classList.remove("active");
+  el(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+function globalQNum(){ var n=0; for(var i=0;i<levelIdx;i++) n+=LEVELS[i].questions.length; return n+qIdx+1; }
+function sortedGroups(){
+  return groups.map(function(g,i){ return {g:g,i:i}; }).sort(function(a,b){ return b.g.score-a.g.score || b.g.correct-a.g.correct; });
+}
+function chipsHTML(){
+  return groups.map(function(g,i){
+    return '<div class="chip" style="--gc:'+COLORS[i]+'"><b>'+EMOJI[i]+' '+escapeHtml(g.name)+'</b><span class="pts">'+g.score+' poin</span><span>Benar '+g.correct+' dari '+answered+'</span></div>';
+  }).join("");
+}
+function refreshChips(){
+  ["chipsTeach","chipsQ"].forEach(function(id){ var c=el(id); if(c) c.innerHTML = chipsHTML(); });
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+/* ---------- SETUP ---------- */
+function buildNameFields(){
+  var html="";
+  for(var i=0;i<6;i++){
+    html += '<div class="namefield" style="--gc:'+COLORS[i]+'"><span class="dot">'+EMOJI[i]+'</span><input id="n'+i+'" type="text" maxlength="20" value="Kelompok '+(i+1)+'" aria-label="Nama kelompok '+(i+1)+'"></div>';
+  }
+  el("nameFields").innerHTML = html;
+}
+function startGame(){
+  groups = [];
+  for(var i=0;i<6;i++){
+    var v = el("n"+i).value.trim();
+    groups.push({ name: v || ("Kelompok "+(i+1)), score:0, correct:0 });
+  }
+  levelIdx = 0; qIdx = 0; answered = 0;
+  showTeach();
+}
+
+/* ---------- TEACH ---------- */
+function showTeach(){
+  var L = LEVELS[levelIdx];
+  el("teachBadge").textContent = "LEVEL "+(levelIdx+1)+" DARI 3 · FASE MENGAJAR";
+  el("teachProgress").textContent = "Soal ke-"+globalQNum()+" dari "+totalQ+" sebentar lagi";
+  el("teachBar").style.width = Math.round((answered/totalQ)*100)+"%";
+  el("teachTitle").textContent = "Level "+(levelIdx+1)+": "+L.title;
+  el("teachIntro").textContent = L.intro;
+  el("teachList").innerHTML = L.teach.map(function(t,i){ return '<li><span class="n">'+(i+1)+'</span><span>'+t+'</span></li>'; }).join("");
+  el("teachExample").innerHTML = L.example;
+  refreshChips();
+  show("s-teach");
+}
+
+/* ---------- QUESTION ---------- */
+function showQuestion(){
+  revealed = false; selected = {};
+  var L = LEVELS[levelIdx], q = L.questions[qIdx];
+  el("qBadge").textContent = "LEVEL "+(levelIdx+1)+" · "+L.title.toUpperCase()+" · SOAL "+(qIdx+1)+" DARI "+L.questions.length;
+  el("qProgress").textContent = "Soal "+globalQNum()+" dari "+totalQ;
+  el("qBar").style.width = Math.round((answered/totalQ)*100)+"%";
+  el("qText").textContent = q.q;
+  el("qDiagram").innerHTML = q.diagram ? DIAGRAMS[q.diagram] : "";
+  el("qDiagram").style.display = q.diagram ? "flex" : "none";
+  el("qOpts").className = "opts";
+  el("qOpts").innerHTML = q.opts.map(function(o,i){
+    return '<div class="opt c'+i+'"><span class="shape">'+SHAPES[i]+'</span><span class="letter">'+"ABCD"[i]+'</span><span>'+escapeHtml(o)+'</span></div>';
+  }).join("");
+  el("qExplain").className = "explain";
+  el("qExplain").innerHTML = "";
+  el("revealRow").style.display = "flex";
+  el("scoring").className = "scoring";
+  refreshChips();
+  show("s-question");
+}
+function reveal(){
+  if(revealed) return; revealed = true;
+  var q = LEVELS[levelIdx].questions[qIdx];
+  var opts = el("qOpts");
+  opts.classList.add("revealed");
+  var kids = opts.children;
+  for(var i=0;i<kids.length;i++){
+    if(i===q.a){ kids[i].classList.add("correct"); kids[i].insertAdjacentHTML("beforeend",'<span class="verdict">✅</span>'); }
+  }
+  var ex = el("qExplain");
+  ex.innerHTML = "<b>Jawaban benar: "+"ABCD"[q.a]+". "+escapeHtml(q.opts[q.a])+"</b><br>"+escapeHtml(q.ex);
+  ex.classList.add("show");
+  el("revealRow").style.display = "none";
+  el("scoreGrid").innerHTML = groups.map(function(g,i){
+    return '<button type="button" class="gbtn" style="--gc:'+COLORS[i]+'" data-i="'+i+'"><span class="tick">✅</span><b>'+EMOJI[i]+' '+escapeHtml(g.name)+'</b><span>'+g.score+' poin · Benar '+g.correct+' dari '+answered+'</span></button>';
+  }).join("");
+  var btns = el("scoreGrid").querySelectorAll(".gbtn");
+  for(var j=0;j<btns.length;j++){
+    btns[j].addEventListener("click", function(){
+      var i = this.getAttribute("data-i");
+      if(selected[i]){ delete selected[i]; this.classList.remove("on"); }
+      else{ selected[i]=true; this.classList.add("on"); }
+    });
+  }
+  el("scoring").classList.add("show");
+  el("btnNext").textContent = (qIdx === LEVELS[levelIdx].questions.length-1) ? "Simpan Skor & Lihat Peringkat →" : "Simpan Skor & Lanjut →";
+  el("scoring").scrollIntoView({behavior:"smooth", block:"start"});
+}
+function confirmScore(){
+  Object.keys(selected).forEach(function(k){ groups[+k].score += 100; groups[+k].correct += 1; });
+  answered += 1;
+  if(qIdx < LEVELS[levelIdx].questions.length-1){ qIdx++; showQuestion(); }
+  else{ showBoard(); }
+}
+
+/* ---------- LEADERBOARD ---------- */
+function boardHTML(listEl){
+  var rows = sortedGroups();
+  listEl.innerHTML = rows.map(function(r,idx){
+    var medal = idx===0?"🥇":idx===1?"🥈":idx===2?"🥉":"";
+    return '<li class="'+(idx===0?"first":"")+'" style="--gc:'+COLORS[r.i]+'"><span class="rank">'+(idx+1)+'</span><span style="font-size:26px">'+medal+'</span><span class="who"><b>'+EMOJI[r.i]+' '+escapeHtml(r.g.name)+'</b><span>Benar '+r.g.correct+' dari '+answered+' soal</span></span><span class="score">'+r.g.score+'</span></li>';
+  }).join("");
+}
+function showBoard(){
+  var last = levelIdx === LEVELS.length-1;
+  el("boardBadge").textContent = last ? "PERINGKAT AKHIR" : "SELESAI LEVEL "+(levelIdx+1);
+  el("boardProgress").textContent = answered+" dari "+totalQ+" soal selesai";
+  el("boardTitle").textContent = last ? "Peringkat Akhir" : "Peringkat Setelah Level "+(levelIdx+1);
+  el("boardSub").textContent = last ? "Ketuk tombol di bawah untuk melihat podium pemenang!" : "Level berikutnya: "+LEVELS[levelIdx+1].title+" — ada Fase Mengajar dulu sebelum bertanding.";
+  el("btnBoardNext").textContent = last ? "🏆 Lihat Podium Pemenang" : "Lanjut ke Level "+(levelIdx+2)+" →";
+  boardHTML(el("boardList"));
+  show("s-board");
+}
+function boardNext(){
+  if(levelIdx === LEVELS.length-1){ showPodium(); }
+  else{ levelIdx++; qIdx = 0; showTeach(); }
+}
+
+/* ---------- PODIUM + CONFETTI ---------- */
+function showPodium(){
+  var rows = sortedGroups();
+  var order = [rows[1], rows[0], rows[2]]; // 2nd, 1st, 3rd visual order
+  var classes = ["p2","p1","p3"], medals = ["🥈","🥇","🥉"], blocks = ["2","1","3"];
+  el("podiumRow").innerHTML = order.map(function(r,k){
+    if(!r) return "";
+    return '<div class="pod '+classes[k]+'"><div class="medal">'+medals[k]+'</div><div class="pname">'+EMOJI[r.i]+' '+escapeHtml(r.g.name)+'</div><div class="pscore">'+r.g.score+' poin · Benar '+r.g.correct+' dari '+answered+'</div><div class="block">'+blocks[k]+'</div></div>';
+  }).join("");
+  boardHTML(el("finalList"));
+  show("s-podium");
+  launchConfetti();
+}
+var confettiTimer = null;
+function launchConfetti(){
+  var cv = el("confetti"), ctx = cv.getContext("2d");
+  cv.width = window.innerWidth; cv.height = window.innerHeight;
+  var pieces = [], cols = ["#e21b3c","#1368ce","#f2a007","#26890c","#7b2d8b","#e05d10"];
+  for(var i=0;i<160;i++){
+    pieces.push({ x:Math.random()*cv.width, y:-20-Math.random()*cv.height*0.6, w:7+Math.random()*7, h:10+Math.random()*8, c:cols[i%cols.length], vy:2+Math.random()*3.2, vx:-1+Math.random()*2, rot:Math.random()*Math.PI, vr:-0.08+Math.random()*0.16 });
+  }
+  var start = Date.now();
+  if(confettiTimer) cancelAnimationFrame(confettiTimer);
+  function frame(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pieces.forEach(function(p){
+      p.y+=p.vy; p.x+=p.vx; p.rot+=p.vr;
+      if(p.y>cv.height+30){ p.y=-20; p.x=Math.random()*cv.width; }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+    });
+    if(Date.now()-start < 6000){ confettiTimer = requestAnimationFrame(frame); }
+    else{ ctx.clearRect(0,0,cv.width,cv.height); }
+  }
+  if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches){ return; }
+  frame();
+}
+
+/* ---------- WIRING ---------- */
+buildNameFields();
+el("btnStart").addEventListener("click", startGame);
+el("btnStartLevel").addEventListener("click", showQuestion);
+el("btnReveal").addEventListener("click", reveal);
+el("btnNext").addEventListener("click", confirmScore);
+el("btnBoardNext").addEventListener("click", boardNext);
+el("btnAgain").addEventListener("click", function(){
+  groups.forEach(function(g){ g.score=0; g.correct=0; });
+  levelIdx=0; qIdx=0; answered=0; showTeach();
+});
+el("btnEditNames").addEventListener("click", function(){
+  buildNameFields();
+  groups.forEach(function(g,i){ el("n"+i).value = g.name; });
+  show("s-setup");
+});
+})();
+</script>
+</body>
+</html>
