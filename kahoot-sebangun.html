@@ -178,7 +178,7 @@
       <div class="btn-row">
         <button class="btn btn-teal btn-big" id="btnStart">▶ &nbsp;Mulai Game</button>
       </div>
-      <p class="center" style="color:var(--muted);font-weight:700">12 soal · 3 level · tiap jawaban benar = 100 poin</p>
+      <p class="center" style="color:var(--muted);font-weight:700">20 soal · 3 level · tiap jawaban benar = 100 poin</p>
     </div>
   </section>
 
@@ -311,7 +311,121 @@ var DIAGRAMS = {
     '<text x="82" y="160" font-size="16" font-weight="700" fill="currentColor">alas 4 cm</text>'+
     '<text x="228" y="160" font-size="16" font-weight="700" fill="currentColor">alas 8 cm</text>'+
     '<text x="30" y="100" font-size="16" font-weight="700" fill="currentColor">5 cm</text>'+
-    '<text x="168" y="92" font-size="16" font-weight="700" fill="currentColor">? cm</text>')
+    '<text x="168" y="92" font-size="16" font-weight="700" fill="currentColor">? cm</text>'),
+  congSidesId: svgWrap(
+    '<rect x="30" y="50" width="115" height="70" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<rect x="195" y="50" width="115" height="70" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<line x1="87" y1="42" x2="87" y2="58" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="252" y1="42" x2="252" y2="58" stroke="#e21b3c" stroke-width="3"/>'+
+    '<line x1="137" y1="78" x2="153" y2="78" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="137" y1="92" x2="153" y2="92" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="302" y1="78" x2="318" y2="78" stroke="#e21b3c" stroke-width="3"/>'+
+    '<line x1="302" y1="92" x2="318" y2="92" stroke="#e21b3c" stroke-width="3"/>'+
+    '<text x="20" y="44" font-size="16" font-weight="800" fill="currentColor">A</text>'+
+    '<text x="148" y="44" font-size="16" font-weight="800" fill="currentColor">B</text>'+
+    '<text x="148" y="140" font-size="16" font-weight="800" fill="currentColor">C</text>'+
+    '<text x="20" y="140" font-size="16" font-weight="800" fill="currentColor">D</text>'+
+    '<text x="185" y="44" font-size="16" font-weight="800" fill="currentColor">P</text>'+
+    '<text x="313" y="44" font-size="16" font-weight="800" fill="currentColor">Q</text>'+
+    '<text x="313" y="140" font-size="16" font-weight="800" fill="currentColor">R</text>'+
+    '<text x="185" y="140" font-size="16" font-weight="800" fill="currentColor">S</text>'+
+    '<text x="52" y="162" font-size="15" font-weight="700" fill="currentColor">Bangun ABCD</text>'+
+    '<text x="218" y="162" font-size="15" font-weight="700" fill="currentColor">Bangun PQRS</text>'),
+  congAngleId: svgWrap(
+    '<polygon points="45,140 145,140 70,50" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="205,140 305,140 230,50" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<path d="M58,68 A22,22 0 0 0 84,66" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<path d="M218,68 A22,22 0 0 0 244,66" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<text x="64" y="40" font-size="17" font-weight="800" fill="currentColor">A</text>'+
+    '<text x="34" y="162" font-size="17" font-weight="800" fill="currentColor">B</text>'+
+    '<text x="140" y="162" font-size="17" font-weight="800" fill="currentColor">C</text>'+
+    '<text x="224" y="40" font-size="17" font-weight="800" fill="currentColor">P</text>'+
+    '<text x="194" y="162" font-size="17" font-weight="800" fill="currentColor">Q</text>'+
+    '<text x="300" y="162" font-size="17" font-weight="800" fill="currentColor">R</text>'+
+    '<text x="90" y="64" font-size="16" font-weight="800" fill="currentColor">50°</text>'+
+    '<text x="250" y="64" font-size="18" font-weight="800" fill="#e21b3c">?</text>'),
+  congTriSides: svgWrap(
+    '<polygon points="30,140 135,140 82,45" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="195,140 300,140 247,45" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<line x1="82" y1="132" x2="82" y2="148" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="247" y1="132" x2="247" y2="148" stroke="#e21b3c" stroke-width="3"/>'+
+    '<text x="76" y="36" font-size="16" font-weight="800" fill="currentColor">A</text>'+
+    '<text x="14" y="146" font-size="16" font-weight="800" fill="currentColor">B</text>'+
+    '<text x="140" y="146" font-size="16" font-weight="800" fill="currentColor">C</text>'+
+    '<text x="241" y="36" font-size="16" font-weight="800" fill="currentColor">P</text>'+
+    '<text x="179" y="146" font-size="16" font-weight="800" fill="currentColor">Q</text>'+
+    '<text x="305" y="146" font-size="16" font-weight="800" fill="currentColor">R</text>'+
+    '<text x="16" y="96" font-size="15" font-weight="700" fill="currentColor">6 cm</text>'+
+    '<text x="112" y="96" font-size="15" font-weight="700" fill="currentColor">7 cm</text>'+
+    '<text x="60" y="166" font-size="15" font-weight="700" fill="currentColor">8 cm</text>'+
+    '<text x="180" y="96" font-size="15" font-weight="700" fill="currentColor">6 cm</text>'+
+    '<text x="278" y="96" font-size="15" font-weight="700" fill="currentColor">7 cm</text>'+
+    '<text x="222" y="166" font-size="17" font-weight="800" fill="#e21b3c">? cm</text>'),
+  congRectSides: svgWrap(
+    '<rect x="35" y="55" width="120" height="65" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<rect x="195" y="55" width="120" height="65" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<line x1="95" y1="47" x2="95" y2="63" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="255" y1="47" x2="255" y2="63" stroke="#e21b3c" stroke-width="3"/>'+
+    '<line x1="27" y1="80" x2="43" y2="80" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="27" y1="94" x2="43" y2="94" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="187" y1="80" x2="203" y2="80" stroke="#e21b3c" stroke-width="3"/>'+
+    '<line x1="187" y1="94" x2="203" y2="94" stroke="#e21b3c" stroke-width="3"/>'+
+    '<text x="72" y="42" font-size="16" font-weight="800" fill="currentColor">9 cm</text>'+
+    '<text x="232" y="42" font-size="18" font-weight="800" fill="#e21b3c">? cm</text>'+
+    '<text x="58" y="94" font-size="14" font-weight="700" fill="currentColor">lebar 5 cm</text>'+
+    '<text x="218" y="94" font-size="14" font-weight="700" fill="currentColor">lebar 5 cm</text>'+
+    '<text x="52" y="146" font-size="15" font-weight="700" fill="currentColor">Bangun pertama</text>'+
+    '<text x="212" y="146" font-size="15" font-weight="700" fill="currentColor">Bangun kedua</text>'),
+  simAngleCalc: svgWrap(
+    '<polygon points="45,140 115,140 80,65" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="185,140 315,140 250,25" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<path d="M70,80 A18,18 0 0 0 91,79" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<path d="M238,42 A22,22 0 0 0 263,40" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<text x="73" y="56" font-size="16" font-weight="800" fill="currentColor">A</text>'+
+    '<text x="36" y="162" font-size="16" font-weight="800" fill="currentColor">B</text>'+
+    '<text x="112" y="162" font-size="16" font-weight="800" fill="currentColor">C</text>'+
+    '<text x="243" y="16" font-size="16" font-weight="800" fill="currentColor">P</text>'+
+    '<text x="176" y="162" font-size="16" font-weight="800" fill="currentColor">Q</text>'+
+    '<text x="310" y="162" font-size="16" font-weight="800" fill="currentColor">R</text>'+
+    '<text x="94" y="74" font-size="16" font-weight="800" fill="currentColor">65°</text>'+
+    '<text x="268" y="36" font-size="19" font-weight="800" fill="#e21b3c">?</text>'),
+  angleSum: svgWrap(
+    '<polygon points="35,140 135,140 85,45" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="190,140 310,140 250,35" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<path d="M118,140 A17,17 0 0 0 128,124" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<path d="M293,140 A17,17 0 0 0 303,124" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<text x="79" y="35" font-size="16" font-weight="800" fill="currentColor">A</text>'+
+    '<text x="20" y="162" font-size="16" font-weight="800" fill="currentColor">B</text>'+
+    '<text x="134" y="162" font-size="16" font-weight="800" fill="currentColor">C</text>'+
+    '<text x="244" y="25" font-size="16" font-weight="800" fill="currentColor">P</text>'+
+    '<text x="176" y="162" font-size="16" font-weight="800" fill="currentColor">Q</text>'+
+    '<text x="308" y="162" font-size="16" font-weight="800" fill="currentColor">R</text>'+
+    '<text x="94" y="64" font-size="14" font-weight="800" fill="currentColor">50°</text>'+
+    '<text x="50" y="132" font-size="14" font-weight="800" fill="currentColor">60°</text>'+
+    '<text x="272" y="132" font-size="18" font-weight="800" fill="#e21b3c">?</text>'),
+  tilesCong: svgWrap(
+    '<rect x="55" y="30" width="105" height="105" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="55,82 107,30 160,82 107,135" fill="none" stroke="#1368ce" stroke-width="2"/>'+
+    '<rect x="185" y="30" width="105" height="105" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<polygon points="185,82 237,30 290,82 237,135" fill="none" stroke="#e21b3c" stroke-width="2"/>'+
+    '<line x1="107" y1="127" x2="107" y2="143" stroke="#1368ce" stroke-width="3"/>'+
+    '<line x1="237" y1="127" x2="237" y2="143" stroke="#e21b3c" stroke-width="3"/>'+
+    '<text x="78" y="20" font-size="15" font-weight="800" fill="currentColor">Ubin 1</text>'+
+    '<text x="208" y="20" font-size="15" font-weight="800" fill="currentColor">Ubin 2</text>'+
+    '<text x="80" y="160" font-size="16" font-weight="800" fill="currentColor">30 cm</text>'+
+    '<text x="212" y="160" font-size="17" font-weight="800" fill="#e21b3c">? cm</text>'),
+  roofAngle: svgWrap(
+    '<line x1="20" y1="145" x2="325" y2="145" stroke="currentColor" stroke-width="3"/>'+
+    '<rect x="45" y="100" width="70" height="45" fill="none" stroke="#1368ce" stroke-width="4"/>'+
+    '<polygon points="35,100 125,100 80,60" fill="rgba(19,104,206,.15)" stroke="#1368ce" stroke-width="4"/>'+
+    '<rect x="200" y="90" width="105" height="55" fill="none" stroke="#e21b3c" stroke-width="4"/>'+
+    '<polygon points="185,90 320,90 252,40" fill="rgba(226,27,60,.12)" stroke="#e21b3c" stroke-width="4"/>'+
+    '<path d="M52,100 A17,17 0 0 0 47,84" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<path d="M202,90 A17,17 0 0 0 197,74" fill="none" stroke="#f2a007" stroke-width="4"/>'+
+    '<text x="56" y="94" font-size="14" font-weight="800" fill="currentColor">35°</text>'+
+    '<text x="206" y="84" font-size="18" font-weight="800" fill="#e21b3c">?</text>'+
+    '<text x="52" y="165" font-size="15" font-weight="700" fill="currentColor">Rumah kecil</text>'+
+    '<text x="212" y="165" font-size="15" font-weight="700" fill="currentColor">Rumah besar</text>')
 };
 
 /* ---------- CONTENT ---------- */
@@ -337,7 +451,13 @@ var LEVELS = [
       ex:"Semua lingkaran bentuknya sama, hanya ukurannya (jari-jari) yang beda — jadi dua lingkaran selalu sebangun. Persegi panjang sembarang bisa beda perbandingan panjang-lebarnya." },
     { q:"Perhatikan dua segitiga ini. Jika keduanya KONGRUEN, maka…", diagram:"triCongruent",
       opts:["Hanya satu sudutnya yang sama","Sisi dan sudut yang bersesuaian sama persis","Segitiga B lebih besar dari A","Hanya alasnya yang sama panjang"], a:1,
-      ex:"Kongruen = semua sisi yang bersesuaian sama panjang dan semua sudut yang bersesuaian sama besar." }
+      ex:"Kongruen = semua sisi yang bersesuaian sama panjang dan semua sudut yang bersesuaian sama besar." },
+    { q:"Dua persegi panjang ini KONGRUEN. Sisi BC bersesuaian dengan sisi…", diagram:"congSidesId",
+      opts:["Sisi PQ","Sisi QR","Sisi RS","Sisi SP"], a:1,
+      ex:"Lihat tanda garisnya: sisi BC ditandai dua garis kecil, sama seperti sisi QR. Tanda yang sama artinya sisi yang bersesuaian." },
+    { q:"Dua segitiga ini KONGRUEN. Sudut yang bersesuaian dengan sudut A adalah…", diagram:"congAngleId",
+      opts:["Sudut P","Sudut Q","Sudut R","Sudut C"], a:0,
+      ex:"Sudut A dan sudut P ditandai busur yang sama, jadi keduanya bersesuaian. Besarnya pun sama: sudut P = 50°." }
   ]
 },
 {
@@ -346,7 +466,8 @@ var LEVELS = [
     "Cari dulu <b>pasangan sisi yang bersesuaian</b>: sisi terpendek dengan sisi terpendek, sisi terpanjang dengan sisi terpanjang.",
     "Tulis perbandingannya: <b>sisi bangun kecil ÷ sisi bangun besar</b> — hasilnya harus sama untuk semua pasangan sisi.",
     "Trik cepat: cari tahu bangunnya <b>diperbesar/diperkecil berapa kali</b>. Contoh: 4 cm menjadi 8 cm artinya diperbesar <b>2 kali</b> — semua sisi lain ikut dikali 2.",
-    "Jangan tertukar pasangan! Samakan juga <b>satuan</b>-nya (cm dengan cm, m dengan m)."
+    "Jangan tertukar pasangan! Samakan juga <b>satuan</b>-nya (cm dengan cm, m dengan m).",
+    "Kasus istimewa: kalau bangunnya <b>KONGRUEN</b>, perbandingannya 1 : 1 — sisi yang bersesuaian panjangnya <b>sama persis</b>, tidak dikali apa-apa. Sudut yang bersesuaian juga <b>sama besar</b>, baik pada bangun sebangun maupun kongruen."
   ],
   example:"<b>Contoh:</b> Segitiga kecil alasnya 3 cm, segitiga besar alasnya 6 cm (2 kali lipat). Sisi miring kecil 5 cm → sisi miring besar = 5 × 2 = <b>10 cm</b>.",
   questions:[
@@ -361,7 +482,19 @@ var LEVELS = [
       ex:"Lebar 3 → 6 artinya dikali 2. Panjangnya ikut dikali 2: 6 × 2 = 12 cm." },
     { q:"Segitiga ABC sebangun dengan segitiga PQR. AB = 6 cm, PQ = 12 cm, dan BC = 7 cm. Berapa panjang QR?",
       opts:["9 cm","12 cm","14 cm","21 cm"], a:2,
-      ex:"AB → PQ: 6 → 12, diperbesar 2 kali. Maka QR = 7 × 2 = 14 cm." }
+      ex:"AB → PQ: 6 → 12, diperbesar 2 kali. Maka QR = 7 × 2 = 14 cm." },
+    { q:"Dua segitiga ini KONGRUEN. Berapa panjang sisi QR?", diagram:"congTriSides",
+      opts:["6 cm","7 cm","8 cm","10 cm"], a:2,
+      ex:"Karena kongruen, sisi yang bersesuaian sama persis — tidak perlu dikali. QR bersesuaian dengan BC yang panjangnya 8 cm, jadi QR = 8 cm." },
+    { q:"Dua persegi panjang ini KONGRUEN. Berapa panjang sisi yang bertanda ?", diagram:"congRectSides",
+      opts:["5 cm","7 cm","9 cm","14 cm"], a:2,
+      ex:"Bangun kongruen ukurannya persis sama. Sisi ? ditandai satu garis, sama dengan sisi 9 cm di bangun pertama, jadi panjangnya juga 9 cm." },
+    { q:"Dua segitiga ini SEBANGUN. Sudut A besarnya 65°. Berapa besar sudut P yang bersesuaian dengan sudut A?", diagram:"simAngleCalc",
+      opts:["25°","65°","90°","115°"], a:1,
+      ex:"Pada bangun sebangun, yang berubah hanya ukuran — sudut yang bersesuaian selalu sama besar. Sudut P bersesuaian dengan sudut A, jadi besarnya juga 65°." },
+    { q:"Dua segitiga ini SEBANGUN. Sudut A = 50° dan sudut B = 60°. Berapa besar sudut R?", diagram:"angleSum",
+      opts:["50°","60°","70°","110°"], a:2,
+      ex:"Jumlah sudut segitiga selalu 180°. Sudut C = 180° − 50° − 60° = 70°. Sudut R bersesuaian dengan sudut C (busurnya sama), jadi sudut R = 70°." }
   ]
 },
 {
@@ -385,7 +518,13 @@ var LEVELS = [
       ex:"5 cm × 1.000.000 = 5.000.000 cm = 50 km." },
     { q:"Miniatur sebuah gedung dibuat sebangun dengan gedung aslinya. Tinggi miniatur 20 cm dan tinggi gedung asli 20 m. Miniatur itu diperkecil berapa kali dari aslinya?",
       opts:["10 kali","50 kali","100 kali","1.000 kali"], a:2,
-      ex:"Samakan satuan: 20 m = 2.000 cm. 2.000 ÷ 20 = 100. Jadi miniatur diperkecil 100 kali (skala 1 : 100)." }
+      ex:"Samakan satuan: 20 m = 2.000 cm. 2.000 ÷ 20 = 100. Jadi miniatur diperkecil 100 kali (skala 1 : 100)." },
+    { q:"Dua ubin lantai ini KONGRUEN — dicetak dengan cetakan yang sama. Berapa panjang sisi ubin kedua?", diagram:"tilesCong",
+      opts:["15 cm","30 cm","45 cm","60 cm"], a:1,
+      ex:"Ubin kongruen berarti bentuk dan ukurannya persis sama. Sisi ubin pertama 30 cm, jadi sisi ubin kedua juga 30 cm." },
+    { q:"Atap dua rumah ini SEBANGUN. Sudut atap rumah kecil adalah 35°. Berapa sudut atap rumah besar yang bersesuaian?", diagram:"roofAngle",
+      opts:["35°","55°","90°","145°"], a:0,
+      ex:"Pada bangun sebangun, sudut yang bersesuaian selalu sama besar — yang berubah hanya ukurannya. Busurnya sama, jadi sudut atap rumah besar juga 35°." }
   ]
 }];
 
