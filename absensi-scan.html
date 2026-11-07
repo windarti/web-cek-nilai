@@ -279,7 +279,7 @@ function stopCamera(){
   document.getElementById('switchCam').style.display='none';
 }
 document.getElementById('rkMonth').value = new Date().toISOString().slice(0,7);
-document.getElementById('ver').textContent = 'v5 · Rekap ' + (SHEET_CSV_URL ? 'tersambung ✓' : 'belum tersambung');
+document.getElementById('ver').textContent = 'v6 · Rekap ' + (SHEET_CSV_URL ? 'tersambung ✓' : 'belum tersambung');
 function parseCSV(text){
   const rows=[]; let row=[], val='', q=false;
   for(let i=0;i<text.length;i++){
@@ -338,6 +338,12 @@ async function loadRekap(){
       per[key]=per[key]||{nisn,nama,kelas,days:{}};
       per[key].days[day]=st; // data terakhir pada hari itu yang dipakai
     }
+    // Semua siswa dari roster tetap tampil — yang belum ada catatannya dihitung Alpa
+    SISWA.forEach(s=>{
+      if(kf && s.kelas!==kf) return;
+      if(per[s.nisn]){ per[s.nisn].nama=s.nama; per[s.nisn].kelas=s.kelas; }
+      else per[s.nisn]={nisn:s.nisn, nama:s.nama, kelas:s.kelas, days:{}};
+    });
     const hEff=dates.size;
     rekapRows=Object.values(per).map(p=>{
       const c={H:0,I:0,S:0,T:0};
