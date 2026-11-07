@@ -279,7 +279,7 @@ function stopCamera(){
   document.getElementById('switchCam').style.display='none';
 }
 document.getElementById('rkMonth').value = new Date().toISOString().slice(0,7);
-document.getElementById('ver').textContent = 'v6 · Rekap ' + (SHEET_CSV_URL ? 'tersambung ✓' : 'belum tersambung');
+document.getElementById('ver').textContent = 'v7 · Rekap ' + (SHEET_CSV_URL ? 'tersambung ✓' : 'belum tersambung');
 function parseCSV(text){
   const rows=[]; let row=[], val='', q=false;
   for(let i=0;i<text.length;i++){
@@ -294,10 +294,13 @@ function parseCSV(text){
   return rows.filter(r=>r.some(x=>String(x).trim()!==''));
 }
 function parseTs(ts){
+  // Format Sheet Indonesia: "07/11/2026 13:28:46" = tanggal/bulan/tahun.
+  // WAJIB dibaca dulu dengan pola ini — new Date("07/11/2026") malah dibaca
+  // sebagai 11 Juli (format Amerika), sehingga data November hilang dari rekap.
+  const m = String(ts).match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+  if(m) return new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0), +(m[6]||0));
   let d = new Date(ts);
   if(!isNaN(d)) return d;
-  const m = String(ts).match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
-  if(m) return new Date(+m[3], +m[2]-1, +m[1]);
   return null;
 }
 let rekapRows=[];
