@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Rekap Nilai Game Aljabar — Kelas VII</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f6f3;
+        --surface: #ffffff;
+        --surface-2: #eef2ec;
+        --ink: #1c2420;
+        --ink-soft: #4c5a52;
+        --ink-faint: #7d8b82;
+        --line: #dde4dc;
+        --accent: #1e7a4f;
+        --accent-ink: #ffffff;
+        --accent-soft: #e2f1e7;
+        --warn-bg: #fdf0e3;
+        --warn-ink: #8a5a16;
+        --warn-line: #f0d9b5;
+        --danger-bg: #fdecea;
+        --danger-ink: #9c2b21;
+        --danger-line: #f3c4bf;
+        --shadow: 0 1px 2px rgba(28, 36, 32, .05), 0 8px 24px rgba(28, 36, 32, .06);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #121714;
+          --surface: #1b211d;
+          --surface-2: #232a25;
+          --ink: #e8ede9;
+          --ink-soft: #b3c0b6;
+          --ink-faint: #84917f;
+          --line: #2e3831;
+          --accent: #3fae74;
+          --accent-ink: #0d1511;
+          --accent-soft: #1d3327;
+          --warn-bg: #3a2c17;
+          --warn-ink: #eec27f;
+          --warn-line: #5c4722;
+          --danger-bg: #3d211d;
+          --danger-ink: #f0a49c;
+          --danger-line: #5f342e;
+          --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 860px; margin: 0 auto; padding: 20px 16px 48px; }
+
+      header.page-head { margin-bottom: 18px; }
+      h1 {
+        font-size: 24px; font-weight: 800; letter-spacing: -.01em;
+        margin: 0 0 4px; line-height: 1.25;
+      }
+      .subtitle { color: var(--ink-soft); margin: 0; font-size: 14px; }
+      .subtitle strong { color: var(--ink); font-weight: 700; }
+
+      .toolbar {
+        display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;
+      }
+      button {
+        font: inherit; font-size: 14px; font-weight: 600;
+        border: 1px solid var(--line); background: var(--surface);
+        color: var(--ink); border-radius: 10px;
+        padding: 9px 16px; cursor: pointer;
+        display: inline-flex; align-items: center; gap: 7px;
+      }
+      button:hover { border-color: var(--accent); color: var(--accent); }
+      button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      button.primary:hover { filter: brightness(1.07); color: var(--accent-ink); }
+      button:disabled { opacity: .55; cursor: default; }
+      button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      button svg { width: 16px; height: 16px; flex: none; }
+
+      .summary {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+        margin: 18px 0;
+      }
+      .stat {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow);
+      }
+      .stat .label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+      .stat .value { font-size: 26px; font-weight: 800; margin-top: 2px; line-height: 1.15; }
+      .stat .value small { font-size: 15px; font-weight: 600; color: var(--ink-soft); }
+      .stat .note { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+      .progress {
+        height: 8px; border-radius: 99px; background: var(--surface-2);
+        overflow: hidden; margin-top: 10px;
+      }
+      .progress > div { height: 100%; background: var(--accent); border-radius: 99px; transition: width .4s ease; }
+
+      .card {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+      }
+      .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { border-collapse: collapse; width: 100%; min-width: 560px; }
+      th, td { padding: 10px 14px; text-align: left; vertical-align: middle; }
+      thead th {
+        font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+        color: var(--ink-soft); background: var(--surface-2);
+        border-bottom: 1px solid var(--line); white-space: nowrap;
+      }
+      tbody tr { border-bottom: 1px solid var(--line); }
+      tbody tr:last-child { border-bottom: none; }
+      td.no, th.no { width: 44px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+      td.nama { font-weight: 600; min-width: 180px; }
+      td.nilai { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      td.waktu { color: var(--ink-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
+      .kosong { color: var(--ink-faint); font-weight: 500; }
+      .pill {
+        display: inline-block; padding: 3px 10px; border-radius: 99px;
+        font-size: 12.5px; font-weight: 700; white-space: nowrap;
+      }
+      .pill.sudah { background: var(--accent-soft); color: var(--accent); }
+      .pill.belum { background: var(--surface-2); color: var(--ink-faint); }
+
+      .state {
+        padding: 40px 20px; text-align: center; color: var(--ink-soft);
+      }
+      .state .big { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+      .spinner {
+        width: 30px; height: 30px; margin: 0 auto 14px;
+        border: 3px solid var(--line); border-top-color: var(--accent);
+        border-radius: 50%; animation: spin .8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        .spinner { animation-duration: 2.4s; }
+        .progress > div { transition: none; }
+      }
+
+      .error-box {
+        background: var(--danger-bg); border: 1px solid var(--danger-line);
+        color: var(--danger-ink); border-radius: var(--radius);
+        padding: 16px 18px; margin-bottom: 16px; font-size: 14px;
+      }
+      .error-box strong { display: block; margin-bottom: 2px; }
+      .error-box button { margin-top: 10px; background: transparent; border-color: currentColor; color: inherit; }
+
+      section.lain { margin-top: 26px; }
+      section.lain h2 { font-size: 18px; font-weight: 800; margin: 0 0 6px; }
+      section.lain p.desc { color: var(--ink-soft); font-size: 14px; margin: 0 0 12px; }
+      section.lain .card { border-color: var(--warn-line); }
+      section.lain thead th { background: var(--warn-bg); color: var(--warn-ink); }
+
+      .meta {
+        margin-top: 14px; font-size: 13px; color: var(--ink-faint);
+        display: flex; flex-wrap: wrap; gap: 4px 16px;
+      }
+      .meta a { color: var(--accent); text-decoration: none; font-weight: 600; }
+      .meta a:hover { text-decoration: underline; }
+
+      @media (max-width: 560px) {
+        h1 { font-size: 21px; }
+        .summary { grid-template-columns: 1fr 1fr; }
+        .stat.ketiga { grid-column: 1 / -1; }
+        .stat .value { font-size: 23px; }
+        th, td { padding: 9px 10px; }
+        .toolbar button { flex: 1 1 auto; justify-content: center; }
+      }
+
+      @media print {
+        :root {
+          --bg: #fff; --surface: #fff; --surface-2: #f2f2f2; --ink: #000;
+          --ink-soft: #333; --ink-faint: #666; --line: #bbb;
+          --accent: #1e7a4f; --accent-soft: #e2f1e7; --shadow: none;
+        }
+        body { background: #fff; font-size: 12.5px; }
+        .wrap { max-width: none; padding: 0; }
+        .toolbar, .meta .sumber { display: none !important; }
+        .card, .stat { box-shadow: none; }
+        .table-scroll { overflow: visible; }
+        table { min-width: 0; }
+        thead { display: table-header-group; }
+        tr { break-inside: avoid; }
+        .summary { margin: 12px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="page-head">
+        <h1>Rekap Nilai Game Aljabar — Kelas VII</h1>
+        <p class="subtitle">Nilai game <strong>“Misi Kristal Aljabar”</strong> yang dikirim siswa, diambil langsung dari spreadsheet jawaban formulir.</p>
+        <div class="toolbar">
+          <button type="button" id="btnReload" class="primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+            Muat Ulang
+          </button>
+          <button type="button" id="btnPrint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Cetak
+          </button>
+          <button type="button" id="btnCsv" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Unduh CSV
+          </button>
+        </div>
+      </header>
+
+      <div id="errorBox" class="error-box" hidden></div>
+
+      <section class="summary" aria-label="Ringkasan">
+        <div class="stat">
+          <div class="label">Sudah Kirim</div>
+          <div class="value"><span id="statKirim">–</span> <small>dari 32 siswa</small></div>
+          <div class="progress" aria-hidden="true"><div id="progressBar" style="width:0%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="label">Rata-rata Nilai</div>
+          <div class="value" id="statRata">–</div>
+          <div class="note">dari nilai yang sudah masuk</div>
+        </div>
+        <div class="stat ketiga">
+          <div class="label">Belum Kirim</div>
+          <div class="value" id="statBelum">–</div>
+          <div class="note">siswa belum mengirim nilai</div>
+        </div>
+      </section>
+
+      <div class="card">
+        <div id="stateBox" class="state">
+          <div class="spinner" aria-hidden="true"></div>
+          <div class="big">Memuat data nilai…</div>
+          <div>Mengambil kiriman terbaru dari spreadsheet.</div>
+        </div>
+        <div class="table-scroll" id="tableWrap" hidden>
+          <table>
+            <thead>
+              <tr>
+                <th class="no">No</th>
+                <th>Nama</th>
+                <th>Nilai</th>
+                <th>Waktu Kirim</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <section class="lain" id="lainSection" hidden>
+        <h2>Nama lain (tidak ada di daftar kelas VII)</h2>
+        <p class="desc">Kiriman di bawah ini namanya tidak cocok dengan daftar kelas — mungkin salah ketik nama. Nilai dan waktunya tetap ditampilkan supaya bisa dikenali.</p>
+        <div class="card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th class="no">No</th>
+                  <th>Nama (seperti tertulis)</th>
+                  <th>Nilai</th>
+                  <th>Waktu Kirim</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyLain"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div class="meta">
+        <span id="metaUpdate">Terakhir diperbarui: –</span>
+        <span class="sumber">Sumber: <a href="https://docs.google.com/spreadsheets/d/173SsueYeiAC84x_3Yy5qk_MQqlNbjlIGAVOXLqZh3BM/edit?usp=drivesdk" target="_blank" rel="noopener">Spreadsheet jawaban “Nilai game aljabar”</a></span>
+      </div>
+    </main>
+
+    <script>
+      "use strict";
+
+      var CSV_URL = "https://docs.google.com/spreadsheets/d/173SsueYeiAC84x_3Yy5qk_MQqlNbjlIGAVOXLqZh3BM/gviz/tq?tqx=out:csv&sheet=Form%20Responses%201";
+
+      var ROSTER = [
+        "Ade Barera", "Alby Luthfy Fachry", "Alfi Farid Arya Fadhillah", "Amelia Az Zahra",
+        "Andre Prastyo", "Anindyta Wahyu Setiani", "Aqila Vera Oktavia", "Azizah Nur Aqilah",
+        "Azka Ibnurahman", "Calista Azzahra", "Devina Afriani", "Faiq Naufal Muafiy",
+        "Faiz Alwi Assegaf", "Ferdi Aldo Kurniawan", "Iffa Astila Rahmatika", "Ismayana",
+        "Khoirul Adi Kurniawan", "Khoirunnisa Salsabila", "Kiki Khoirunnisa", "Laura Sintia Dewi",
+        "Lisna Wati", "Lupy Ullaily", "Mahmud Yusup Khadapi", "Niken Wulan Anjani",
+        "Nova Cahya Agustin", "Novi Suryanti", "Novita Laras Sari", "Rizki Wahyu Pratama",
+        "Rona Latifatu Satiroh", "Safrina Mau'nah", "Tevin Seputra", "Wirjinia Nasya Rahayu"
+      ];
+
+      var BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+      var lastRows = null; // hasil gabungan terakhir, untuk Unduh CSV
+
+      function normalizeName(s) {
+        return String(s == null ? "" : s).replace(/\s+/g, " ").trim().toLowerCase();
+      }
+
+      // Timestamp spreadsheet: "08/11/2026 19:05:00" = hari/bulan/tahun.
+      // JANGAN pakai new Date(string) — string bergaris miring dibaca gaya Amerika
+      // (bulan/hari) dan hari↔bulan tertukar. Pecah manual, hari dulu.
+      function parseTimestampID(str) {
+        if (!str) return null;
+        var m = String(str).trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+        if (!m) return null;
+        var hari = parseInt(m[1], 10);
+        var bulan = parseInt(m[2], 10); // 1-12
+        var tahun = parseInt(m[3], 10);
+        var jam = m[4] ? parseInt(m[4], 10) : 0;
+        var menit = m[5] ? parseInt(m[5], 10) : 0;
+        var detik = m[6] ? parseInt(m[6], 10) : 0;
+        if (bulan < 1 || bulan > 12 || hari < 1 || hari > 31) return null;
+        var d = new Date(tahun, bulan - 1, hari, jam, menit, detik);
+        if (isNaN(d.getTime())) return null;
+        if (d.getDate() !== hari || d.getMonth() !== bulan - 1) return null; // tanggal tidak valid
+        return d;
+      }
+
+      function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+      // "8 Nov 2026, 19.05"
+      function formatWaktu(d) {
+        if (!d) return "—";
+        return d.getDate() + " " + BULAN[d.getMonth()] + " " + d.getFullYear() +
+               ", " + pad2(d.getHours()) + "." + pad2(d.getMinutes());
+      }
+
+      function formatWaktuCsv(d) {
+        if (!d) return "";
+        return d.getDate() + " " + BULAN[d.getMonth()] + " " + d.getFullYear() +
+               " " + pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+      }
+
+      // Parser CSV sederhana yang paham tanda kutip, koma di dalam kutip, dan kutip ganda.
+      function parseCSV(text) {
+        var rows = [], row = [], field = "", inQuotes = false, i, c;
+        text = String(text).replace(/^\uFEFF/, "");
+        for (i = 0; i < text.length; i++) {
+          c = text[i];
+          if (inQuotes) {
+            if (c === '"') {
+              if (text[i + 1] === '"') { field += '"'; i++; }
+              else inQuotes = false;
+            } else field += c;
+          } else if (c === '"') {
+            inQuotes = true;
+          } else if (c === ",") {
+            row.push(field); field = "";
+          } else if (c === "\n") {
+            row.push(field); field = "";
+            rows.push(row); row = [];
+          } else if (c !== "\r") {
+            field += c;
+          }
+        }
+        if (field !== "" || row.length > 0) { row.push(field); rows.push(row); }
+        return rows.filter(function (r) {
+          return r.some(function (cell) { return String(cell).trim() !== ""; });
+        });
+      }
+
+      function parseNilai(raw) {
+        if (raw == null) return null;
+        var s = String(raw).trim().replace(",", ".");
+        if (s === "") return null;
+        var n = parseFloat(s);
+        return isNaN(n) ? null : n;
+      }
+
+      function formatNilai(n) {
+        if (n == null) return "—";
+        return (Math.round(n * 10) / 10).toString().replace(".", ",");
+      }
+
+      function el(id) { return document.getElementById(id); }
+
+      function showError(msg) {
+        var box = el("errorBox");
+        box.innerHTML = "";
+        var strong = document.createElement("strong");
+        strong.textContent = "Data belum bisa dimuat";
+        var p = document.createElement("div");
+        p.textContent = msg;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = "Coba Lagi";
+        btn.addEventListener("click", loadData);
+        box.appendChild(strong); box.appendChild(p); box.appendChild(btn);
+        box.hidden = false;
+      }
+      function hideError() { el("errorBox").hidden = true; }
+
+      function render(submissions) {
+        // submissions: [{nama, nilai, waktu(Date|null), urutan}]
+        var rosterByKey = {};
+        ROSTER.forEach(function (nama) { rosterByKey[normalizeName(nama)] = nama; });
+
+        var latestByStudent = {}; // key normal -> submission terakhir
+        var lainByKey = {};        // nama lain -> submission terakhir
+
+        submissions.forEach(function (sub) {
+          var key = normalizeName(sub.nama);
+          if (!key) return;
+          var target = rosterByKey[key] ? latestByStudent : lainByKey;
+          var prev = target[key];
+          if (!prev || compareSub(sub, prev) >= 0) target[key] = sub;
+        });
+
+        var rows = ROSTER.map(function (nama, i) {
+          var sub = latestByStudent[normalizeName(nama)] || null;
+          return { no: i + 1, nama: nama, sub: sub };
+        });
+
+        var kirim = rows.filter(function (r) { return r.sub; });
+        var totalNilai = 0, jumlahNilai = 0;
+        kirim.forEach(function (r) {
+          if (r.sub.nilai != null) { totalNilai += r.sub.nilai; jumlahNilai++; }
+        });
+
+        el("statKirim").textContent = kirim.length;
+        el("statBelum").textContent = ROSTER.length - kirim.length;
+        el("progressBar").style.width = (kirim.length / ROSTER.length * 100) + "%";
+        el("statRata").textContent = jumlahNilai > 0 ? formatNilai(totalNilai / jumlahNilai) : "—";
+
+        var tbody = el("tbody");
+        tbody.innerHTML = "";
+        rows.forEach(function (r) {
+          var tr = document.createElement("tr");
+
+          var tdNo = document.createElement("td");
+          tdNo.className = "no"; tdNo.textContent = r.no;
+
+          var tdNama = document.createElement("td");
+          tdNama.className = "nama"; tdNama.textContent = r.nama;
+
+          var tdNilai = document.createElement("td");
+          tdNilai.className = "nilai";
+          var tdWaktu = document.createElement("td");
+          tdWaktu.className = "waktu";
+          var tdStatus = document.createElement("td");
+          var pill = document.createElement("span");
+
+          if (r.sub) {
+            tdNilai.textContent = r.sub.nilai != null ? formatNilai(r.sub.nilai) : (r.sub.nilaiRaw || "—");
+            tdWaktu.textContent = formatWaktu(r.sub.waktu);
+            pill.className = "pill sudah"; pill.textContent = "Sudah kirim";
+          } else {
+            tdNilai.innerHTML = '<span class="kosong">—</span>';
+            tdWaktu.innerHTML = '<span class="kosong">—</span>';
+            pill.className = "pill belum"; pill.textContent = "Belum kirim";
+          }
+          tdStatus.appendChild(pill);
+
+          tr.appendChild(tdNo); tr.appendChild(tdNama); tr.appendChild(tdNilai);
+          tr.appendChild(tdWaktu); tr.appendChild(tdStatus);
+          tbody.appendChild(tr);
+        });
+
+        // Nama lain (tidak ada di daftar kelas)
+        var lainList = Object.keys(lainByKey).map(function (k) { return lainByKey[k]; });
+        lainList.sort(function (a, b) { return compareSub(a, b); });
+        if (lainList.length > 0) {
+          var tb = el("tbodyLain");
+          tb.innerHTML = "";
+          lainList.forEach(function (sub, i) {
+            var tr = document.createElement("tr");
+            var tdNo = document.createElement("td");
+            tdNo.className = "no"; tdNo.textContent = i + 1;
+            var tdNama = document.createElement("td");
+            tdNama.className = "nama"; tdNama.textContent = sub.nama;
+            var tdNilai = document.createElement("td");
+            tdNilai.className = "nilai";
+            tdNilai.textContent = sub.nilai != null ? formatNilai(sub.nilai) : (sub.nilaiRaw || "—");
+            var tdWaktu = document.createElement("td");
+            tdWaktu.className = "waktu"; tdWaktu.textContent = formatWaktu(sub.waktu);
+            tr.appendChild(tdNo); tr.appendChild(tdNama); tr.appendChild(tdNilai); tr.appendChild(tdWaktu);
+            tb.appendChild(tr);
+          });
+          el("lainSection").hidden = false;
+        } else {
+          el("lainSection").hidden = true;
+        }
+
+        lastRows = { rows: rows, lain: lainList };
+        el("btnCsv").disabled = false;
+        el("stateBox").hidden = true;
+        el("tableWrap").hidden = false;
+
+        var now = new Date();
+        el("metaUpdate").textContent = "Terakhir diperbarui: " + formatWaktu(now) + " WIB";
+      }
+
+      // Bandingkan dua kiriman: yang lebih baru menang; seri -> baris belakangan menang.
+      function compareSub(a, b) {
+        var ta = a.waktu ? a.waktu.getTime() : 0;
+        var tb = b.waktu ? b.waktu.getTime() : 0;
+        if (ta !== tb) return ta - tb;
+        return a.urutan - b.urutan;
+      }
+
+      function loadData() {
+        var btn = el("btnReload");
+        btn.disabled = true;
+        hideError();
+        if (!lastRows) {
+          el("stateBox").hidden = false;
+          el("tableWrap").hidden = true;
+        }
+        var url = CSV_URL + "&_muat=" + Date.now(); // hindari cache lama saat Muat Ulang
+        fetch(url, { cache: "no-store" })
+          .then(function (res) {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.text();
+          })
+          .then(function (text) {
+            var rows = parseCSV(text);
+            if (rows.length === 0) { render([]); return; }
+            var header = rows[0].map(function (h) { return normalizeName(h); });
+            var iNama = header.indexOf("nama");
+            var iNilai = header.indexOf("nilai");
+            var iWaktu = header.indexOf("timestamp");
+            if (iNama < 0 || iNilai < 0) {
+              throw new Error("Format spreadsheet tidak dikenali (kolom Nama/Nilai tidak ditemukan).");
+            }
+            var submissions = [];
+            for (var i = 1; i < rows.length; i++) {
+              var r = rows[i];
+              var nama = (r[iNama] || "").trim();
+              if (!nama) continue;
+              submissions.push({
+                nama: nama.replace(/\s+/g, " "),
+                nilaiRaw: (r[iNilai] || "").trim(),
+                nilai: parseNilai(r[iNilai]),
+                waktu: iWaktu >= 0 ? parseTimestampID(r[iWaktu]) : null,
+                urutan: i
+              });
+            }
+            render(submissions);
+          })
+          .catch(function (err) {
+            if (!lastRows) {
+              el("stateBox").innerHTML = "";
+              var big = document.createElement("div");
+              big.className = "big"; big.textContent = "Belum ada data yang tampil";
+              var sub = document.createElement("div");
+              sub.textContent = "Tekan “Coba Lagi” di kotak merah di atas, atau periksa koneksi internet.";
+              el("stateBox").appendChild(big); el("stateBox").appendChild(sub);
+              el("stateBox").hidden = false;
+            }
+            showError("Tidak dapat mengambil data dari spreadsheet (" + err.message + "). Pastikan spreadsheet sudah dibagikan ke “Siapa saja yang memiliki link dapat melihat”, lalu coba lagi.");
+          })
+          .then(function () { btn.disabled = false; });
+      }
+
+      function csvCell(v) {
+        v = String(v == null ? "" : v);
+        return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+      }
+
+      function downloadCsv() {
+        if (!lastRows) return;
+        var lines = ["No;Nama;Nilai;Waktu Kirim;Status"];
+        lastRows.rows.forEach(function (r) {
+          lines.push([
+            r.no,
+            csvCell(r.nama),
+            r.sub && r.sub.nilai != null ? String(r.sub.nilai).replace(".", ",") : "",
+            r.sub ? formatWaktuCsv(r.sub.waktu) : "",
+            r.sub ? "Sudah kirim" : "Belum kirim"
+          ].join(";"));
+        });
+        if (lastRows.lain.length > 0) {
+          lines.push("");
+          lines.push("Nama lain (tidak ada di daftar kelas VII)");
+          lines.push("No;Nama;Nilai;Waktu Kirim");
+          lastRows.lain.forEach(function (sub, i) {
+            lines.push([
+              i + 1,
+              csvCell(sub.nama),
+              sub.nilai != null ? String(sub.nilai).replace(".", ",") : "",
+              formatWaktuCsv(sub.waktu)
+            ].join(";"));
+          });
+        }
+        var blob = new Blob(["\uFEFF" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "rekap-nilai-game-aljabar-kelas-vii.csv";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          URL.revokeObjectURL(a.href);
+          a.remove();
+        }, 500);
+      }
+
+      el("btnReload").addEventListener("click", loadData);
+      el("btnCsv").addEventListener("click", downloadCsv);
+      el("btnPrint").addEventListener("click", function () { window.print(); });
+
+      loadData();
+    </script>
+  </body>
+</html>
