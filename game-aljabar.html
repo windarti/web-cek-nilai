@@ -398,6 +398,7 @@
         margin: 12px 0 0;
       }
       .submit-box .sent-note.show { display: block; }
+      .submit-box .sent-note.error { color: var(--bad); }
 
       .foot-note { text-align: center; color: var(--ink-soft); font-size: 0.85rem; margin-top: 22px; }
     </style>
@@ -529,12 +530,12 @@
           <p id="final-stars"></p>
           <div class="submit-box">
             <p class="nilai-big">Nilai Kamu: <span id="final-nilai">0</span>/100</p>
-            <p class="submit-hint">Tulis namamu di bawah ini, lalu kirim nilaimu ke gurumu supaya tercatat.</p>
+            <p class="submit-hint">Tulis namamu di bawah ini, lalu ketuk Kirim Nilai — nilaimu langsung terkirim ke gurumu.</p>
             <label for="input-nama">Nama kamu</label>
             <input type="text" id="input-nama" placeholder="Tulis namamu di sini" maxlength="60" autocomplete="name" />
             <p class="name-warning" id="name-warning">Tulis namamu dulu ya, sebelum mengirim nilai!</p>
             <button class="btn" id="btn-kirim-nilai" type="button">Kirim Nilai</button>
-            <p class="sent-note" id="sent-note">Formulir sudah terbuka di tab baru — jangan lupa tekan tombol Kirim di formulir itu ya!</p>
+            <p class="sent-note" id="sent-note">✓ Nilai terkirim! Nilaimu sudah tercatat.</p>
           </div>
           <div class="recap">
             <h3>Kamus Mini Aljabar</h3>
@@ -1221,14 +1222,25 @@
         state.hearts = 3;
         $("input-nama").value = "";
         $("name-warning").classList.remove("show");
-        $("sent-note").classList.remove("show");
+        var note = $("sent-note");
+        note.classList.remove("show");
+        note.classList.remove("error");
+        note.textContent = "✓ Nilai terkirim! Nilaimu sudah tercatat.";
+        var btnKirim = $("btn-kirim-nilai");
+        btnKirim.disabled = false;
+        btnKirim.textContent = "Kirim Nilai";
+        nilaiSedangDikirim = false;
+        nilaiSudahTerkirim = false;
         renderMap();
       }
 
       /* ================= KIRIM NILAI ================= */
-      var FORM_URL =
-        "https://docs.google.com/forms/d/e/1FAIpQLSdQjsSF0edq0LzMA7mmOsmyfFWHi0ydh2pGlpGwLqRvYwTPJA/viewform?usp=pp_url";
+      var FORM_RESPONSE_URL =
+        "https://docs.google.com/forms/d/e/1FAIpQLSdQjsSF0edq0LzMA7mmOsmyfFWHi0ydh2pGlpGwLqRvYwTPJA/formResponse";
+      var nilaiSedangDikirim = false;
+      var nilaiSudahTerkirim = false;
       function kirimNilai() {
+        if (nilaiSedangDikirim || nilaiSudahTerkirim) return;
         var nama = $("input-nama").value.trim();
         if (!nama) {
           $("name-warning").classList.add("show");
@@ -1236,12 +1248,38 @@
           return;
         }
         $("name-warning").classList.remove("show");
-        var url =
-          FORM_URL +
-          "&entry.772839009=" + encodeURIComponent(nama) +
+        var note = $("sent-note");
+        note.classList.remove("show");
+        note.classList.remove("error");
+        var btn = $("btn-kirim-nilai");
+        nilaiSedangDikirim = true;
+        btn.disabled = true;
+        btn.textContent = "Mengirim…";
+        var body =
+          "entry.772839009=" + encodeURIComponent(nama) +
           "&entry.29438925=" + encodeURIComponent(String(nilaiDariSkor(state.score)));
-        window.open(url, "_blank");
-        $("sent-note").classList.add("show");
+        fetch(FORM_RESPONSE_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body
+        })
+          .then(function () {
+            nilaiSedangDikirim = false;
+            nilaiSudahTerkirim = true;
+            btn.textContent = "✓ Nilai Terkirim";
+            note.textContent = "✓ Nilai terkirim! Nilaimu sudah tercatat.";
+            note.classList.remove("error");
+            note.classList.add("show");
+          })
+          .catch(function () {
+            nilaiSedangDikirim = false;
+            btn.disabled = false;
+            btn.textContent = "Kirim Nilai";
+            note.textContent = "Nilai belum terkirim — periksa koneksi internetmu, lalu coba lagi ya.";
+            note.classList.add("error");
+            note.classList.add("show");
+          });
       }
 
       /* ================= WIRING ================= */
