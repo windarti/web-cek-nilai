@@ -349,6 +349,56 @@
       .trophy { width: 84px; height: 84px; margin: 0 auto; color: var(--gold-dark); }
       .trophy svg { width: 100%; height: 100%; }
 
+      /* ---------- Submit nilai (layar akhir) ---------- */
+      .submit-box {
+        background: var(--surface-2);
+        border: 2px dashed var(--gold-dark);
+        border-radius: 14px;
+        padding: 20px 18px;
+        margin: 22px auto 4px;
+        max-width: 480px;
+      }
+      .submit-box .nilai-big {
+        font-family: "Baloo 2", sans-serif;
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: var(--teal-dark);
+        margin: 0 0 4px;
+      }
+      .submit-box .submit-hint { margin: 0 0 14px; font-size: 0.95rem; }
+      .submit-box label { display: block; font-weight: 800; text-align: left; margin: 0 0 6px; font-size: 0.95rem; }
+      .submit-box input {
+        display: block;
+        width: 100%;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--ink);
+        background: var(--surface);
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+      }
+      .submit-box input:focus { outline: none; border-color: var(--teal); }
+      .submit-box .name-warning {
+        display: none;
+        color: var(--bad);
+        font-weight: 800;
+        font-size: 0.92rem;
+        margin: 0 0 10px;
+        text-align: left;
+      }
+      .submit-box .name-warning.show { display: block; }
+      .submit-box .sent-note {
+        display: none;
+        color: var(--good);
+        font-weight: 800;
+        font-size: 0.92rem;
+        margin: 12px 0 0;
+      }
+      .submit-box .sent-note.show { display: block; }
+
       .foot-note { text-align: center; color: var(--ink-soft); font-size: 0.85rem; margin-top: 22px; }
     </style>
   </head>
@@ -477,6 +527,15 @@
           <p>Luar biasa, Penjelajah! Kamu telah menaklukkan kesembilan pos dan membuktikan penguasaanmu atas unsur-unsur aljabar dan operasi aljabar. Kuil Angka Tersembunyi kini terbuka untukmu selamanya.</p>
           <p class="score-line" id="final-score"></p>
           <p id="final-stars"></p>
+          <div class="submit-box">
+            <p class="nilai-big">Nilai Kamu: <span id="final-nilai">0</span>/100</p>
+            <p class="submit-hint">Tulis namamu di bawah ini, lalu kirim nilaimu ke gurumu supaya tercatat.</p>
+            <label for="input-nama">Nama kamu</label>
+            <input type="text" id="input-nama" placeholder="Tulis namamu di sini" maxlength="60" autocomplete="name" />
+            <p class="name-warning" id="name-warning">Tulis namamu dulu ya, sebelum mengirim nilai!</p>
+            <button class="btn" id="btn-kirim-nilai" type="button">Kirim Nilai</button>
+            <p class="sent-note" id="sent-note">Formulir sudah terbuka di tab baru — jangan lupa tekan tombol Kirim di formulir itu ya!</p>
+          </div>
           <div class="recap">
             <h3>Kamus Mini Aljabar</h3>
             <dl>
@@ -1134,10 +1193,19 @@
         showScreen("screen-chapter-result");
       }
 
+      function nilaiDariSkor(score) {
+        // 36 soal x 100 poin = 3600 poin maksimal; nilai = poin / 36, dibulatkan
+        var n = Math.round(score / 36);
+        if (n < 0) n = 0;
+        if (n > 100) n = 100;
+        return n;
+      }
+
       function finishGame() {
         var totalStars = 0;
         for (var k in state.stars) totalStars += state.stars[k];
         $("final-score").textContent = "Skor akhir: " + state.score + " poin";
+        $("final-nilai").textContent = nilaiDariSkor(state.score);
         $("final-stars").innerHTML =
           '<span class="stars" style="vertical-align:middle">' + starRow(Math.min(3, Math.round(totalStars / CHAPTERS.length)), 3) + "</span>" +
           " &nbsp;Total bintang: " + totalStars + " dari " + CHAPTERS.length * 3;
@@ -1151,7 +1219,29 @@
         state.stars = {};
         state.current = 0;
         state.hearts = 3;
+        $("input-nama").value = "";
+        $("name-warning").classList.remove("show");
+        $("sent-note").classList.remove("show");
         renderMap();
+      }
+
+      /* ================= KIRIM NILAI ================= */
+      var FORM_URL =
+        "https://docs.google.com/forms/d/e/1FAIpQLSdQjsSF0edq0LzMA7mmOsmyfFWHi0ydh2pGlpGwLqRvYwTPJA/viewform?usp=pp_url";
+      function kirimNilai() {
+        var nama = $("input-nama").value.trim();
+        if (!nama) {
+          $("name-warning").classList.add("show");
+          $("input-nama").focus();
+          return;
+        }
+        $("name-warning").classList.remove("show");
+        var url =
+          FORM_URL +
+          "&entry.772839009=" + encodeURIComponent(nama) +
+          "&entry.29438925=" + encodeURIComponent(String(nilaiDariSkor(state.score)));
+        window.open(url, "_blank");
+        $("sent-note").classList.add("show");
       }
 
       /* ================= WIRING ================= */
@@ -1168,6 +1258,10 @@
         else openLesson(state.current + 1);
       });
       $("btn-play-again").addEventListener("click", resetGame);
+      $("btn-kirim-nilai").addEventListener("click", kirimNilai);
+      $("input-nama").addEventListener("input", function () {
+        if ($("input-nama").value.trim()) $("name-warning").classList.remove("show");
+      });
     </script>
   </body>
 </html>
